@@ -43,8 +43,8 @@ public class MainActivity extends Activity
             return;
         }
 
-        if(! hasTermuxPermission()){
-            requestTermuxPermission();
+        if(! TermuxUtils.hasTermuxPermission(this)){
+            TermuxUtils.requestTermuxPermission(this);
             finish();
             return;
         }
@@ -67,26 +67,9 @@ public class MainActivity extends Activity
 				public void onClick(View v){
 					commandRunBtn.setEnabled(false);
 					instruction.setVisibility(View.VISIBLE);
-					try{
-						String command = commandEdittext.getText().toString().trim();
-						
-						//this supports multi line commands
-						String commandFull = "\n(\n" + command + "\n)";
-
-						//output to a file
-						commandFull += "> " + outputFile.getAbsolutePath();
-
-						Intent intent = new Intent();
-						intent.setClassName("com.termux", "com.termux.app.RunCommandService");
-						intent.setAction("com.termux.RUN_COMMAND");
-						intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
-						intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
-						startService(intent);
-
-					}catch(IllegalStateException e){
-						//Not allowed to start service Intent...app is in background...
-						handleIllegalStateException(e);
-					}
+					String command = commandEdittext.getText().toString().trim();
+					IllegalStateException e = TermuxUtils.runCommand(command, outputFile, MainActivity.this);
+					if (e != null) handleIllegalStateException(e);
 				}
 			});
     }
@@ -97,18 +80,7 @@ public class MainActivity extends Activity
 		super.onResume();
 		if(! outputFile.exists()) return;
 		
-		// read command output from file and delete it
-		StringBuilder content = new StringBuilder();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(outputFile));
-            String line;
-
-            while((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-            reader.close();
-			outputFile.delete();
-        } catch(Exception e) { handleException(e); }
+		String content = TermuxUtils.readCommandOutput(outputFile);
 		
 		if(content.toString().trim().isEmpty()) return;
 		
@@ -118,14 +90,6 @@ public class MainActivity extends Activity
 	}
 	
 	
-    boolean hasTermuxPermission(){
-        return checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
-    }
-
-    void requestTermuxPermission(){
-        requestPermissions(new String[]{"com.termux.permission.RUN_COMMAND"}, 69);
-    }
-
     boolean hasStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             return Environment.isExternalStorageManager();
@@ -165,15 +129,8 @@ public class MainActivity extends Activity
 		button.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v){
-					try {
-						Intent intent = new Intent();
-						intent.setComponent(new ComponentName("com.termux.api", "com.termux.api.activities.TermuxAPIMainActivity"));
-						startActivity(intent);
-						Toast.makeText(MainActivity.this, "Go back to the app again:D", Toast.LENGTH_LONG).show();
-						//finish();
-					} catch (Exception e) {
-						textView.setText(e.getMessage());
-					}
+					Exception e = TermuxUtils.openTermuxAPI(MainActivity.this);
+					if (e != null) textView.setText(e.getMessage());
 				}
 			});
 		layout.addView(textView);
