@@ -1,4 +1,4 @@
-package imo.aide_after_run;
+package imo.after_run;
 
 import android.app.Activity;
 import android.content.ComponentName;

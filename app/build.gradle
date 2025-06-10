@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "imo.aide_after_run"
+        applicationId "imo.after_run"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1

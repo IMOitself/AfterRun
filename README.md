@@ -1,11 +1,12 @@
 # AfterRun
-accepts apk from AIDE after running project
+app that sends command to Termux
 
-## How it works
-- AIDE opens the apk file of a project after building
-- the 'Open With' dialog will be open and AfterRun will show on choices
-- AfterRun will then locate the project folder and performs command
-- it will use Termux:API to call a command e.g ```git status```
+## Making it work
+- must have Termux and Termux:API installed
+- must have run this command on Termux first:
+- ```pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"```
 
 ## Edit this AfterRun project
+- this is an AIDE project
+- which means it can only be build using AIDE
 - will have separate md file for this topic later...
