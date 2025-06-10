@@ -1,11 +1,21 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 
-    <TextView
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+	<ImageView
+		android:src="@drawable/termux_notif"
+		android:layout_width="match_parent"
+		android:layout_height="100dp"
+		android:scaleType="fitCenter"/>
+
+	<TextView
+		android:text="click this notification to run command"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/main_txt"/>
 
 </LinearLayout>
+

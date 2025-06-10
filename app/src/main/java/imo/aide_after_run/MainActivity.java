@@ -37,16 +37,15 @@ public class MainActivity extends Activity
         }
 		
         /** 
-         * must have Termux:API installed
-         * must run this on termux first:
-        
-         pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"
-
+         * must have Termux:API installed and
+         * run this on termux first:
+		   pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"
         **/
 		
         try{
             String script = "echo hello!";
-            script += "\nread a"; //this ensures termux do not exit immediately
+			//this ensures termux do not exit immediately
+            script += "\nread a";
             
             Intent intent = new Intent();
             intent.setClassName("com.termux", "com.termux.app.RunCommandService");
@@ -55,34 +54,12 @@ public class MainActivity extends Activity
             intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", script});
             startService(intent);
 			
-        }catch(Exception e){
-			LinearLayout layout = new LinearLayout(this);
-			layout.setOrientation(LinearLayout.VERTICAL);
-			final TextView textView = new TextView(this);
-			textView.setText(e.getMessage());
-			textView.setTextIsSelectable(true);
-			Button button = new Button(this);
-			button.setText("Maybe Open Termux:API first?");
-			button.setOnClickListener(new OnClickListener(){
-					@Override
-					public void onClick(View v){
-						try {
-							Intent intent = new Intent();
-							intent.setComponent(new ComponentName("com.termux.api", "com.termux.api.activities.TermuxAPIMainActivity"));
-							startActivity(intent);
-							Toast.makeText(MainActivity.this, "Go back to the app again:D", Toast.LENGTH_LONG).show();
-							finish();
-						} catch (Exception e) {
-							textView.setText(e.getMessage());
-						}
-					}
-				});
-			layout.addView(textView);
-			layout.addView(button);
-			setContentView(layout);
-        }
+        }catch(Exception e){ handleException(e); }
     }
-    
+	
+	
+	
+	
     boolean hasTermuxPermission(){
         return checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
     }
@@ -109,4 +86,34 @@ public class MainActivity extends Activity
             requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
         }
     }
+	
+	void handleException(Exception e){
+		final LinearLayout layout = new LinearLayout(this);
+		final TextView textView = new TextView(this);
+		final Button button = new Button(this);
+		
+		layout.setOrientation(LinearLayout.VERTICAL);
+		
+		textView.setText(e.getMessage());
+		textView.setTextIsSelectable(true);
+		
+		button.setText("Maybe Open Termux:API first?");
+		button.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View v){
+					try {
+						Intent intent = new Intent();
+						intent.setComponent(new ComponentName("com.termux.api", "com.termux.api.activities.TermuxAPIMainActivity"));
+						startActivity(intent);
+						Toast.makeText(MainActivity.this, "Go back to the app again:D", Toast.LENGTH_LONG).show();
+						finish();
+					} catch (Exception e) {
+						textView.setText(e.getMessage());
+					}
+				}
+			});
+		layout.addView(textView);
+		layout.addView(button);
+		setContentView(layout);
+	}
 }
