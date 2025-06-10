@@ -11,18 +11,21 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 
 public class MainActivity extends Activity 
 {
 	File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
+	ViewGroup instruction;
+	TextView outputTxt;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -48,30 +51,41 @@ public class MainActivity extends Activity
 		   pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"
         **/
 		
-        try{
-			String command = "echo hello!";
-			command += "\ndate";
-			
-			//this supports multi line commands
-			String commandFull = "";
-			commandFull += "\n(";
-			commandFull += "\n" + command;
-			commandFull += "\n)";
-			
-			//output to a file
-			commandFull += "> " + outputFile.getAbsolutePath();
-			
-			Intent intent = new Intent();
-            intent.setClassName("com.termux", "com.termux.app.RunCommandService");
-            intent.setAction("com.termux.RUN_COMMAND");
-            intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
-            intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
-            startService(intent);
-			
-        }catch(IllegalStateException e){
-			//Not allowed to start service Intent...app is in background...
-			handleIllegalStateException(e);
-		}
+		final EditText commandEdittext = findViewById(R.id.command_edittext);
+		final Button commandRunBtn = findViewById(R.id.command_run_btn);
+		instruction = findViewById(R.id.instruction);
+		outputTxt = findViewById(R.id.output_txt);
+		
+		instruction.setVisibility(View.GONE);
+		commandRunBtn.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View v){
+					instruction.setVisibility(View.VISIBLE);
+					try{
+						String command = commandEdittext.getText().toString().trim();
+						
+						//this supports multi line commands
+						String commandFull = "";
+						commandFull += "\n(";
+						commandFull += "\n" + command;
+						commandFull += "\n)";
+
+						//output to a file
+						commandFull += "> " + outputFile.getAbsolutePath();
+
+						Intent intent = new Intent();
+						intent.setClassName("com.termux", "com.termux.app.RunCommandService");
+						intent.setAction("com.termux.RUN_COMMAND");
+						intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
+						intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
+						startService(intent);
+
+					}catch(IllegalStateException e){
+						//Not allowed to start service Intent...app is in background...
+						handleIllegalStateException(e);
+					}
+				}
+			});
     }
 
 	
@@ -95,10 +109,8 @@ public class MainActivity extends Activity
 		
 		if(content.toString().trim().isEmpty()) return;
 		
-		final TextView textView = new TextView(this);
-		textView.setText(content.toString());
-		setContentView(textView);
-        
+		instruction.setVisibility(View.GONE);
+		outputTxt.setText(content.toString());
 	}
 	
 	
