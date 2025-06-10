@@ -43,15 +43,25 @@ public class MainActivity extends Activity
         **/
 		
         try{
-            String script = "echo hello!";
+			String command = "echo hello!";
+			
+			//this supports multi line commands
+			String commandFull = "";
+			commandFull += "\n(";
+			commandFull += "\n" + command;
+			commandFull += "\n)";
+			
+			//output to a file
+			commandFull += "> /storage/emulated/0/Download/.afterruntemp";
+			
 			//this ensures termux do not exit immediately
-            script += "\nread a";
-            
+            commandFull += "\nread me";
+			
             Intent intent = new Intent();
             intent.setClassName("com.termux", "com.termux.app.RunCommandService");
             intent.setAction("com.termux.RUN_COMMAND");
             intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
-            intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", script});
+            intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
             startService(intent);
 			
         }catch(Exception e){ handleException(e); }
