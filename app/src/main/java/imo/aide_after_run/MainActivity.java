@@ -63,10 +63,7 @@ public class MainActivity extends Activity
 			//output to a file
 			commandFull += "> " + outputFile.getAbsolutePath();
 			
-			//this ensures termux do not exit immediately
-            commandFull += "\nread me";
-			
-            Intent intent = new Intent();
+			Intent intent = new Intent();
             intent.setClassName("com.termux", "com.termux.app.RunCommandService");
             intent.setAction("com.termux.RUN_COMMAND");
             intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
