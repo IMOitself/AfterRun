@@ -1,6 +1,7 @@
 package imo.aide_after_run;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -8,7 +9,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity 
 {
@@ -37,6 +43,7 @@ public class MainActivity extends Activity
          pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"
 
         **/
+		
         try{
             String script = "echo hello!";
             script += "\nread a"; //this ensures termux do not exit immediately
@@ -47,11 +54,32 @@ public class MainActivity extends Activity
             intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
             intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", script});
             startService(intent);
+			
         }catch(Exception e){
-            TextView textView = new TextView(this);
-            textView.setText(e.getMessage());
-            textView.setTextIsSelectable(true);
-            setContentView(textView);
+			LinearLayout layout = new LinearLayout(this);
+			layout.setOrientation(LinearLayout.VERTICAL);
+			final TextView textView = new TextView(this);
+			textView.setText(e.getMessage());
+			textView.setTextIsSelectable(true);
+			Button button = new Button(this);
+			button.setText("Maybe Open Termux:API first?");
+			button.setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View v){
+						try {
+							Intent intent = new Intent();
+							intent.setComponent(new ComponentName("com.termux.api", "com.termux.api.activities.TermuxAPIMainActivity"));
+							startActivity(intent);
+							Toast.makeText(MainActivity.this, "Go back to the app again:D", Toast.LENGTH_LONG).show();
+							finish();
+						} catch (Exception e) {
+							textView.setText(e.getMessage());
+						}
+					}
+				});
+			layout.addView(textView);
+			layout.addView(button);
+			setContentView(layout);
         }
     }
     
