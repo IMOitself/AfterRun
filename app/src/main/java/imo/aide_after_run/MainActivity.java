@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.widget.TextView;
 
 public class MainActivity extends Activity 
 {
@@ -27,6 +28,30 @@ public class MainActivity extends Activity
             requestTermuxPermission();
             finish();
             return;
+        }
+		
+        /** 
+         * must have Termux:API installed
+         * must run this on termux first:
+        
+         pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"
+
+        **/
+        try{
+            String script = "echo hello!";
+            script += "\nread a"; //this ensures termux do not exit immediately
+            
+            Intent intent = new Intent();
+            intent.setClassName("com.termux", "com.termux.app.RunCommandService");
+            intent.setAction("com.termux.RUN_COMMAND");
+            intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
+            intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", script});
+            startService(intent);
+        }catch(Exception e){
+            TextView textView = new TextView(this);
+            textView.setText(e.getMessage());
+            textView.setTextIsSelectable(true);
+            setContentView(textView);
         }
     }
     
