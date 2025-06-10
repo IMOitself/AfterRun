@@ -9,4 +9,6 @@ app that sends command to Termux
 ## Edit this AfterRun project
 - this is an AIDE project
 - which means it can only be build using AIDE
-- will have separate md file for this topic later...
+- but the code is java so its compatible with Android Studio *if u are satisfied to copy and paste*
+- although no androidx and java version 8+ is used. And it must remain not to be use
+- will have separate md file for this topic someday...
