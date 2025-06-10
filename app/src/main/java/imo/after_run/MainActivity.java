@@ -23,8 +23,6 @@ import java.io.IOException;
 public class MainActivity extends Activity 
 {
 	File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
-	boolean hasPaused = false;
-	boolean isCommandSent = false;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,24 +67,18 @@ public class MainActivity extends Activity
             intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
             intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
             startService(intent);
-			isCommandSent = true;
 			
-        }catch(Exception e){ handleException(e); }
+        }catch(IllegalStateException e){
+			//Not allowed to start service Intent...app is in background...
+			handleIllegalStateException(e);
+		}
     }
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		hasPaused = true;
-	}
 
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(! hasPaused || ! isCommandSent) return;
-		hasPaused = false;
-		isCommandSent = false;
+		if(! outputFile.exists()) return;
 		
 		// read command output from file and delete it
 		StringBuilder content = new StringBuilder();
@@ -138,6 +130,12 @@ public class MainActivity extends Activity
     }
 	
 	void handleException(Exception e){
+		final TextView textView = new TextView(this);
+		textView.setText(e.getMessage());
+		setContentView(textView);
+	}
+	
+	void handleIllegalStateException(Exception e){
 		final LinearLayout layout = new LinearLayout(this);
 		final TextView textView = new TextView(this);
 		final Button button = new Button(this);
@@ -156,7 +154,7 @@ public class MainActivity extends Activity
 						intent.setComponent(new ComponentName("com.termux.api", "com.termux.api.activities.TermuxAPIMainActivity"));
 						startActivity(intent);
 						Toast.makeText(MainActivity.this, "Go back to the app again:D", Toast.LENGTH_LONG).show();
-						finish();
+						//finish();
 					} catch (Exception e) {
 						textView.setText(e.getMessage());
 					}
