@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class MainActivity extends Activity
 		final Button commandRunBtn = findViewById(R.id.command_run_btn);
 		instruction = findViewById(R.id.instruction);
 		outputTxt = findViewById(R.id.output_txt);
+		outputTxt.setMovementMethod(new ScrollingMovementMethod());
 		
 		instruction.setVisibility(View.GONE);
 		commandRunBtn.setOnClickListener(new OnClickListener(){
@@ -65,10 +67,7 @@ public class MainActivity extends Activity
 						String command = commandEdittext.getText().toString().trim();
 						
 						//this supports multi line commands
-						String commandFull = "";
-						commandFull += "\n(";
-						commandFull += "\n" + command;
-						commandFull += "\n)";
+						String commandFull = "\n(\n" + command + "\n)";
 
 						//output to a file
 						commandFull += "> " + outputFile.getAbsolutePath();
