@@ -9,7 +9,22 @@ import java.io.File;
 import java.io.FileReader;
 
 public class TermuxUtils {
-    
+	/** 
+	 * must have Termux:API installed and
+	 * run this on termux first:
+	 
+	 pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"
+	 
+	 **/
+	
+    /**
+	  * must have this on onCreate() of the activity:
+	
+	 if (! TermuxUtils.hasTermuxPermission(this)) {
+	 	TermuxUtils.requestTermuxPermission(this);
+	 }
+	
+	**/
     static boolean hasTermuxPermission(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
     }
@@ -17,7 +32,14 @@ public class TermuxUtils {
 	static void requestTermuxPermission(Activity activity){
         activity.requestPermissions(new String[]{"com.termux.permission.RUN_COMMAND"}, 69);
     }
-	
+	/**
+	 * sample usage:
+
+	 TermuxUtils.openTermuxAPI(MainActivity.this);
+	 
+	 * need to open Termux:API first if runCommand() cant start service
+
+	 **/
 	static Exception openTermuxAPI(Activity activity){
 		try {
 			Intent intent = new Intent();
@@ -30,7 +52,16 @@ public class TermuxUtils {
 		}
 		return null;
 	}
-	
+	/**
+	 * sample usage:
+
+	 IllegalStateException e = TermuxUtils.runCommand("echo hello", outputFile, MainActivity.this);
+	 if (e != null) // handle exception. maybe prompt to do openTermuxAPI()
+
+	 * must handle error if not allowed to start service
+	 * outputFile will be deleted so be careful
+	 
+	 **/
 	static IllegalStateException runCommand(String command, File outputFile, Activity activity){
 		try{
 			//this supports multi line commands
@@ -52,7 +83,15 @@ public class TermuxUtils {
 		}
 		return null;
 	}
-	
+	/**
+	 * sample usage:
+
+	 String content = TermuxUtils.readCommandOutput(outputFile);
+	 
+	 * must be the same outputFile used in runCommand()
+	 * outputFile will be deleted so be careful
+
+	 **/
 	static String readCommandOutput(File outputFile){
 		// read command output from file and delete it
 		StringBuilder content = new StringBuilder();
