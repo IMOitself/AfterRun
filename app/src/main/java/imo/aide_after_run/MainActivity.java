@@ -15,9 +15,16 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class MainActivity extends Activity 
 {
+	File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
+	boolean hasPaused = false;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -44,6 +51,7 @@ public class MainActivity extends Activity
 		
         try{
 			String command = "echo hello!";
+			command += "\ndate";
 			
 			//this supports multi line commands
 			String commandFull = "";
@@ -52,7 +60,7 @@ public class MainActivity extends Activity
 			commandFull += "\n)";
 			
 			//output to a file
-			commandFull += "> /storage/emulated/0/Download/.afterruntemp";
+			commandFull += "> " + outputFile.getAbsolutePath();
 			
 			//this ensures termux do not exit immediately
             commandFull += "\nread me";
@@ -66,8 +74,40 @@ public class MainActivity extends Activity
 			
         }catch(Exception e){ handleException(e); }
     }
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		hasPaused = true;
+	}
+
 	
-	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(! hasPaused) return;
+		hasPaused = false;
+		
+		// read command output from file and delete it
+		StringBuilder content = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(outputFile));
+            String line;
+
+            while((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+            reader.close();
+			outputFile.delete();
+        } catch(Exception e) { handleException(e); }
+		
+		if(content.toString().trim().isEmpty()) return;
+		
+		final TextView textView = new TextView(this);
+		textView.setText(content.toString());
+		setContentView(textView);
+        
+	}
 	
 	
     boolean hasTermuxPermission(){
