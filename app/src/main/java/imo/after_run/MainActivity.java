@@ -25,6 +25,9 @@ import java.io.FileReader;
 public class MainActivity extends Activity 
 {
 	File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
+	
+	EditText commandEdittext;
+	Button commandRunBtn;
 	ViewGroup instruction;
 	TextView outputTxt;
 	
@@ -53,7 +56,7 @@ public class MainActivity extends Activity
         **/
 		
 		final EditText commandEdittext = findViewById(R.id.command_edittext);
-		final Button commandRunBtn = findViewById(R.id.command_run_btn);
+		commandRunBtn = findViewById(R.id.command_run_btn);
 		instruction = findViewById(R.id.instruction);
 		outputTxt = findViewById(R.id.output_txt);
 		outputTxt.setMovementMethod(new ScrollingMovementMethod());
@@ -62,6 +65,7 @@ public class MainActivity extends Activity
 		commandRunBtn.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v){
+					commandRunBtn.setEnabled(false);
 					instruction.setVisibility(View.VISIBLE);
 					try{
 						String command = commandEdittext.getText().toString().trim();
@@ -108,6 +112,7 @@ public class MainActivity extends Activity
 		
 		if(content.toString().trim().isEmpty()) return;
 		
+		commandRunBtn.setEnabled(true);
 		instruction.setVisibility(View.GONE);
 		outputTxt.setText(content.toString());
 	}
