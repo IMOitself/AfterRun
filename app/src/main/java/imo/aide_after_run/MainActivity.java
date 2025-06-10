@@ -24,6 +24,7 @@ public class MainActivity extends Activity
 {
 	File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
 	boolean hasPaused = false;
+	boolean isCommandSent = false;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -71,6 +72,7 @@ public class MainActivity extends Activity
             intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
             intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
             startService(intent);
+			isCommandSent = true;
 			
         }catch(Exception e){ handleException(e); }
     }
@@ -85,8 +87,9 @@ public class MainActivity extends Activity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(! hasPaused) return;
+		if(! hasPaused || ! isCommandSent) return;
 		hasPaused = false;
+		isCommandSent = false;
 		
 		// read command output from file and delete it
 		StringBuilder content = new StringBuilder();
