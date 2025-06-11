@@ -8,7 +8,9 @@ app that sends command to Termux
 ## Making it work
 - must have [Termux](https://f-droid.org/en/packages/com.termux/) and [Termux:API](https://f-droid.org/en/packages/com.termux.api/ ) installed
 - must have run this command on Termux first:
-- ```pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"```
+- ```
+  pkg install termux-api && sed -i 's/# allow-external-apps = true/allow-external-apps = true/g' ~/.termux/termux.properties
+  ```
 
 ## Edit this AfterRun project
 - this is an AIDE project
