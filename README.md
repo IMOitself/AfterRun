@@ -1,6 +1,10 @@
 # AfterRun
 app that sends command to Termux
 
+| Image 1 | Image 2 | Image 3 |
+|:-------:|:-------:|:-------:|
+| <img src="assets/screenshot1.jpg" width="200"> | <img src="assets/screenshot2.jpg" width="200"> | <img src="assets/screenshot3.jpg" width="200"> |
+
 ## Making it work
 - must have [Termux](https://f-droid.org/en/packages/com.termux/) and [Termux:API](https://f-droid.org/en/packages/com.termux.api/ ) installed
 - must have run this command on Termux first:
