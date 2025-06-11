@@ -25,11 +25,11 @@ public class TermuxUtils {
 	 }
 	
 	**/
-    static boolean hasTermuxPermission(Activity activity){
+    public static boolean hasTermuxPermission(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
     }
     
-	static void requestTermuxPermission(Activity activity){
+	public static void requestTermuxPermission(Activity activity){
         activity.requestPermissions(new String[]{"com.termux.permission.RUN_COMMAND"}, 69);
     }
 	/**
@@ -40,7 +40,7 @@ public class TermuxUtils {
 	 * need to open Termux:API first if runCommand() cant start service
 
 	 **/
-	static Exception openTermuxAPI(Activity activity){
+	public static Exception openTermuxAPI(Activity activity){
 		try {
 			Intent intent = new Intent();
 			intent.setComponent(new ComponentName("com.termux.api", "com.termux.api.activities.TermuxAPIMainActivity"));
@@ -62,7 +62,7 @@ public class TermuxUtils {
 	 * outputFile will be deleted so be careful
 	 
 	 **/
-	static IllegalStateException runCommand(String command, File outputFile, Activity activity){
+	public static IllegalStateException runCommand(String command, File outputFile, Activity activity){
 		try{
 			//this supports multi line commands
 			String commandFull = "\n(\n" + command + "\n)";
@@ -92,7 +92,7 @@ public class TermuxUtils {
 	 * outputFile will be deleted so be careful
 
 	 **/
-	static String readCommandOutput(File outputFile){
+	public static String readCommandOutput(File outputFile){
 		// read command output from file and delete it
 		StringBuilder content = new StringBuilder();
         try {
