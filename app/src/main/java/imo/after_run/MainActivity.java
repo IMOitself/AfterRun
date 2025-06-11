@@ -24,8 +24,6 @@ import java.io.FileReader;
 
 public class MainActivity extends Activity 
 {
-	File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
-	
 	EditText commandEdittext;
 	Button commandRunBtn;
 	ViewGroup instruction;
@@ -43,11 +41,11 @@ public class MainActivity extends Activity
             return;
         }
 
-        if(! TermuxUtils.hasTermuxPermission(this)){
-            TermuxUtils.requestTermuxPermission(this);
-            finish();
+		if(! TermuxUtilsV2.permissionIsGranted(this)){
+			TermuxUtilsV2.permissionRequest(this);
+			finish();
             return;
-        }
+		}
 		
         /** 
          * must have Termux:API installed and
@@ -68,8 +66,7 @@ public class MainActivity extends Activity
 					commandRunBtn.setEnabled(false);
 					instruction.setVisibility(View.VISIBLE);
 					String command = commandEdittext.getText().toString().trim();
-					IllegalStateException e = TermuxUtils.runCommand(command, outputFile, MainActivity.this);
-					if (e != null) handleIllegalStateException(e);
+					TermuxUtilsV2.commandRun(command, MainActivity.this);
 				}
 			});
     }
@@ -78,9 +75,9 @@ public class MainActivity extends Activity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(! outputFile.exists()) return;
+		if(! TermuxUtilsV2.commandOutputExists()) return;
 		
-		String content = TermuxUtils.readCommandOutput(outputFile);
+		String content = TermuxUtilsV2.commandOutputRead();
 		
 		if(content.toString().trim().isEmpty()) return;
 		
@@ -108,33 +105,4 @@ public class MainActivity extends Activity
             requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
         }
     }
-	
-	void handleException(Exception e){
-		final TextView textView = new TextView(this);
-		textView.setText(e.getMessage());
-		setContentView(textView);
-	}
-	
-	void handleIllegalStateException(Exception e){
-		final LinearLayout layout = new LinearLayout(this);
-		final TextView textView = new TextView(this);
-		final Button button = new Button(this);
-		
-		layout.setOrientation(LinearLayout.VERTICAL);
-		
-		textView.setText(e.getMessage());
-		textView.setTextIsSelectable(true);
-		
-		button.setText("Maybe Open Termux:API first?");
-		button.setOnClickListener(new OnClickListener(){
-				@Override
-				public void onClick(View v){
-					Exception e = TermuxUtils.openTermuxAPI(MainActivity.this);
-					if (e != null) textView.setText(e.getMessage());
-				}
-			});
-		layout.addView(textView);
-		layout.addView(button);
-		setContentView(layout);
-	}
 }
