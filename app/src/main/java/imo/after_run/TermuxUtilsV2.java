@@ -50,7 +50,7 @@ public class TermuxUtilsV2 {
 
 		}catch(IllegalStateException e){
 			//Not allowed to start service Intent...app is in background...
-			openTermuxAPI(activity);
+			commandHandleException(e, activity);
 		}
 	}
 	
