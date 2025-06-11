@@ -19,8 +19,10 @@ public class TermuxUtilsV2 {
 	 * must have Termux:API installed and
 	 * run this on termux first:
 
-	 pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"
-
+	 pkg install termux-api
+	 sed -i 's/# allow-external-apps = true/allow-external-apps = true/g' ~/.termux/termux.properties
+	 termux-setup-storage
+	 
 	 **/
 	 
 	private static File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");

@@ -47,12 +47,6 @@ public class MainActivity extends Activity
             return;
 		}
 		
-        /** 
-         * must have Termux:API installed and
-         * run this on termux first:
-		   pkg install termux-api && echo "allow-external-apps = true" >> "$HOME/.termux/termux.properties"
-        **/
-		
 		final EditText commandEdittext = findViewById(R.id.command_edittext);
 		commandRunBtn = findViewById(R.id.command_run_btn);
 		instruction = findViewById(R.id.instruction);
