@@ -1,9 +1,7 @@
 # AfterRun
 app that sends command to Termux
 
-![screenshot 1](assets/screenshot1.jpg)
-
-| Image 1 | Image 2 | Image 3 
+| 1 | 2 | 3 
 |:-------:|:-------:|:-------:|
 | ![screenshot 1](assets/screenshot1.jpg) | ![screenshot 2](assets/screenshot2.jpg) | ![screenshot 3](assets/screenshot3.jpg) |
 
