@@ -19,25 +19,6 @@
 		android:text="Run Command"
 		android:id="@+id/command_run_btn"/>
 
-	<LinearLayout
-		android:orientation="vertical"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/instruction">
-
-		<ImageView
-			android:src="@drawable/termux_notif"
-			android:layout_width="match_parent"
-			android:layout_height="100dp"
-			android:scaleType="fitCenter"/>
-
-		<TextView
-			android:text="click this notification to run command"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"/>
-
-	</LinearLayout>
-
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

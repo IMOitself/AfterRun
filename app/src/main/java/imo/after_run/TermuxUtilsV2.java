@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,6 +37,7 @@ public class TermuxUtilsV2 {
         activity.requestPermissions(new String[]{"com.termux.permission.RUN_COMMAND"}, 69);
     }
 	
+	@Deprecated
 	public static void commandRun(String command, Activity activity){
 		try{
 			//this supports multi line commands
@@ -57,6 +60,46 @@ public class TermuxUtilsV2 {
 		}
 	}
 	
+	public static void commandRunV2(String command, Activity activity){
+		try{
+			//this supports multi line commands
+			String commandFull = "\n(\n" + command + "\n)";
+
+			//output to a file
+			commandFull += "> " + outputFile.getAbsolutePath();
+
+			Intent intent = new Intent();
+			intent.setClassName("com.termux", "com.termux.app.RunCommandService");
+			intent.setAction("com.termux.RUN_COMMAND");
+			intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
+			intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
+			intent.putExtra("com.termux.RUN_COMMAND_SHELL_NAME", "After Run");
+			intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", true);
+			activity.startService(intent);
+
+		}catch(IllegalStateException e){
+			//Not allowed to start service Intent...app is in background...
+			commandHandleException(e, activity);
+		}
+	}
+	
+	public static void commandRunV2OnOutput(final Runnable onOutput){
+		final Handler handler = new Handler(Looper.getMainLooper());
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				if(! commandOutputExists()){
+					handler.postDelayed(this, 500);
+				}else{
+					handler.removeCallbacks(this);
+					onOutput.run();
+				}
+			}
+		};
+
+		handler.post(runnable);
+	}
+	
 	public static String commandOutputRead(){
 		// read command output from file and delete it
 		StringBuilder content = new StringBuilder();
@@ -69,9 +112,12 @@ public class TermuxUtilsV2 {
             }
             reader.close();
 			outputFile.delete();
+			
         } catch(Exception e) { return e.getMessage(); }
 		return content.toString();
 	}
+	
+	
 	
 	public static boolean commandOutputExists(){
 		return outputFile.exists();
