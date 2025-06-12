@@ -86,7 +86,7 @@ public class TermuxUtilsV2 {
 		textView.setText(e.getMessage());
 		textView.setTextIsSelectable(true);
 
-		button.setText("Maybe Open Termux:API first?");
+		button.setText("Maybe Open Termux first?");
 		button.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v){
@@ -110,10 +110,10 @@ public class TermuxUtilsV2 {
 	public static Exception openTermuxAPI(Activity activity){
 		try {
 			Intent intent = new Intent();
-			intent.setComponent(new ComponentName("com.termux.api", "com.termux.api.activities.TermuxAPIMainActivity"));
+			intent.setComponent(new ComponentName("com.termux", "com.termux.app.TermuxActivity"));
 			activity.startActivity(intent);
 			Toast.makeText(activity, "Go back to the app again:D", Toast.LENGTH_LONG).show();
-
+			activity.finishAffinity();
 		} catch (Exception e) {
 			return e;
 		}
