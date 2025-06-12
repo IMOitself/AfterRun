@@ -16,19 +16,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-public class TermuxUtilsV2 {
-	/** 
-	 * must have Termux:API installed and
-	 * run this on termux first:
-
-	 pkg install termux-api
-	 sed -i 's/# allow-external-apps = true/allow-external-apps = true/g' ~/.termux/termux.properties
-	 termux-setup-storage
-	 
-	 **/
-	 
-	private static File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
+public class TermuxUtilsV3 {
 	
+    private static File outputFile = new File("/storage/emulated/0/AfterRun/.afterruntemp");
+
     public static boolean permissionIsGranted(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
     }
@@ -37,7 +28,7 @@ public class TermuxUtilsV2 {
         activity.requestPermissions(new String[]{"com.termux.permission.RUN_COMMAND"}, 69);
     }
 	
-	public static void commandRun(String command, Activity activity){
+    public static void commandRun(String command, Activity activity){
 		try{
 			//this supports multi line commands
 			String commandFull = "\n(\n" + command + "\n)";
@@ -51,6 +42,7 @@ public class TermuxUtilsV2 {
 			intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
 			intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
 			intent.putExtra("com.termux.RUN_COMMAND_SHELL_NAME", "After Run");
+			intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", true);
 			activity.startService(intent);
 
 		}catch(IllegalStateException e){
@@ -58,7 +50,24 @@ public class TermuxUtilsV2 {
 			commandHandleException(e, activity);
 		}
 	}
-	
+
+	public static void commandRunOnOutput(final Runnable onOutput){
+		final Handler handler = new Handler(Looper.getMainLooper());
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				if(! commandOutputExists()){
+					handler.postDelayed(this, 500);
+				}else{
+					handler.removeCallbacks(this);
+					onOutput.run();
+				}
+			}
+		};
+
+		handler.post(runnable);
+	}
+    
 	public static String commandOutputRead(){
 		// read command output from file and delete it
 		StringBuilder content = new StringBuilder();
@@ -71,17 +80,17 @@ public class TermuxUtilsV2 {
             }
             reader.close();
 			outputFile.delete();
-			
+
         } catch(Exception e) { return e.getMessage(); }
 		return content.toString();
 	}
-	
-	
-	
+
+
+
 	public static boolean commandOutputExists(){
 		return outputFile.exists();
 	}
-	 
+
 	private static void commandHandleException(Exception e, final Activity activity){
 		final LinearLayout layout = new LinearLayout(activity);
 		final TextView textView = new TextView(activity);
@@ -104,7 +113,7 @@ public class TermuxUtilsV2 {
 		layout.addView(button);
 		activity.setContentView(layout);
 	}
-	 
+
 	/**
 	 * sample usage:
 
@@ -125,5 +134,4 @@ public class TermuxUtilsV2 {
 		}
 		return null;
 	}
-	
 }

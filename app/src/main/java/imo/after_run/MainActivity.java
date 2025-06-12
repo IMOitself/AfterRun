@@ -40,8 +40,8 @@ public class MainActivity extends Activity
             return;
         }
 
-		if(! TermuxUtilsV2.permissionIsGranted(this)){
-			TermuxUtilsV2.permissionRequest(this);
+		if(! TermuxUtilsV3.permissionIsGranted(this)){
+			TermuxUtilsV3.permissionRequest(this);
 			finish();
             return;
 		}
@@ -57,11 +57,11 @@ public class MainActivity extends Activity
 					commandRunBtn.setEnabled(false);
 					outputTxt.setText("Waiting...");
 					String command = commandEdittext.getText().toString().trim();
-					TermuxUtilsV2.commandRunV2(command, MainActivity.this);
-					TermuxUtilsV2.commandRunV2OnOutput(new Runnable() {
+					TermuxUtilsV3.commandRun(command, MainActivity.this);
+					TermuxUtilsV3.commandRunOnOutput(new Runnable() {
 							@Override
 							public void run() {
-								String content = TermuxUtilsV2.commandOutputRead();
+								String content = TermuxUtilsV3.commandOutputRead();
 								commandRunBtn.setEnabled(true);
 								outputTxt.setText(content.toString());
 							}
