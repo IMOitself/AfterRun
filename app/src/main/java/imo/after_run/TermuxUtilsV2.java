@@ -48,6 +48,7 @@ public class TermuxUtilsV2 {
 			intent.setAction("com.termux.RUN_COMMAND");
 			intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
 			intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
+			intent.putExtra("com.termux.RUN_COMMAND_SHELL_NAME", "After Run");
 			activity.startService(intent);
 
 		}catch(IllegalStateException e){
