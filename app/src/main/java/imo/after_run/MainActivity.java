@@ -26,6 +26,7 @@ public class MainActivity extends Activity
 {
 	EditText commandEdittext;
 	Button commandRunBtn;
+	ViewGroup instruction;
 	TextView outputTxt;
 	
     @Override
@@ -40,35 +41,45 @@ public class MainActivity extends Activity
             return;
         }
 
-		if(! TermuxUtilsV3.permissionIsGranted(this)){
-			TermuxUtilsV3.permissionRequest(this);
+		if(! TermuxUtilsV2.permissionIsGranted(this)){
+			TermuxUtilsV2.permissionRequest(this);
 			finish();
             return;
 		}
 		
 		final EditText commandEdittext = findViewById(R.id.command_edittext);
 		commandRunBtn = findViewById(R.id.command_run_btn);
+		instruction = findViewById(R.id.instruction);
 		outputTxt = findViewById(R.id.output_txt);
 		outputTxt.setMovementMethod(new ScrollingMovementMethod());
 		
+		instruction.setVisibility(View.GONE);
 		commandRunBtn.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v){
 					commandRunBtn.setEnabled(false);
-					outputTxt.setText("Waiting...");
+					instruction.setVisibility(View.VISIBLE);
 					String command = commandEdittext.getText().toString().trim();
-					TermuxUtilsV3.commandRun(command, MainActivity.this);
-					TermuxUtilsV3.commandRunOnOutput(new Runnable() {
-							@Override
-							public void run() {
-								String content = TermuxUtilsV3.commandOutputRead();
-								commandRunBtn.setEnabled(true);
-								outputTxt.setText(content.toString());
-							}
-					});
+					TermuxUtilsV2.commandRun(command, MainActivity.this);
 				}
 			});
     }
+
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(! TermuxUtilsV2.commandOutputExists()) return;
+		
+		String content = TermuxUtilsV2.commandOutputRead();
+		
+		if(content.toString().trim().isEmpty()) return;
+		
+		commandRunBtn.setEnabled(true);
+		instruction.setVisibility(View.GONE);
+		outputTxt.setText(content.toString());
+	}
+	
 	
     boolean hasStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
