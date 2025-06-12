@@ -60,7 +60,7 @@ public class MainActivity extends Activity
 					commandRunBtn.setEnabled(false);
 					instruction.setVisibility(View.VISIBLE);
 					String command = commandEdittext.getText().toString().trim();
-					TermuxUtilsV2.commandRun(command, MainActivity.this);
+					TermuxUtilsV3.commandRun(command, MainActivity.this);
 				}
 			});
     }
@@ -69,15 +69,9 @@ public class MainActivity extends Activity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(! TermuxUtilsV2.commandOutputExists()) return;
-		
-		String content = TermuxUtilsV2.commandOutputRead();
-		
-		if(content.toString().trim().isEmpty()) return;
-		
 		commandRunBtn.setEnabled(true);
 		instruction.setVisibility(View.GONE);
-		outputTxt.setText(content.toString());
+		outputTxt.setText(TermuxUtilsV3.commandOutputGet(this));
 	}
 	
 	

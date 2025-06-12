@@ -18,7 +18,7 @@ import java.io.FileReader;
 
 public class TermuxUtilsV3 {
 	
-    private static File outputFile = new File("/storage/emulated/0/AfterRun/.afterruntemp");
+    private static String TERMUX_EXTRA_KEY = "TERMUX_EXTRA_KEY";
 
     public static boolean permissionIsGranted(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
@@ -31,18 +31,18 @@ public class TermuxUtilsV3 {
     public static void commandRun(String command, Activity activity){
 		try{
 			//this supports multi line commands
-			String commandFull = "\n(\n" + command + "\n)";
-
-			//output to a file
-			commandFull += "> " + outputFile.getAbsolutePath();
-
+			String commandFull = "command=$(\n" + command + "\n)";
+			
+			commandFull += "\nam start -n ";
+			commandFull += activity.getPackageName() + "/" + activity.getClass().getName();
+			commandFull += " --es \""+TERMUX_EXTRA_KEY+"\" \"$command\"";
+			
 			Intent intent = new Intent();
 			intent.setClassName("com.termux", "com.termux.app.RunCommandService");
 			intent.setAction("com.termux.RUN_COMMAND");
 			intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
 			intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
 			intent.putExtra("com.termux.RUN_COMMAND_SHELL_NAME", "After Run");
-			intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", true);
 			activity.startService(intent);
 
 		}catch(IllegalStateException e){
@@ -50,47 +50,17 @@ public class TermuxUtilsV3 {
 			commandHandleException(e, activity);
 		}
 	}
-
-	public static void commandRunOnOutput(final Runnable onOutput){
-		final Handler handler = new Handler(Looper.getMainLooper());
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				if(! commandOutputExists()){
-					handler.postDelayed(this, 500);
-				}else{
-					handler.removeCallbacks(this);
-					onOutput.run();
-				}
-			}
-		};
-
-		handler.post(runnable);
-	}
-    
-	public static String commandOutputRead(){
-		// read command output from file and delete it
-		StringBuilder content = new StringBuilder();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(outputFile));
-            String line;
-
-            while((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-            reader.close();
-			outputFile.delete();
-
-        } catch(Exception e) { return e.getMessage(); }
-		return content.toString();
+	
+	public static String commandOutputGet(Activity activity){
+		Intent intent = activity.getIntent();
+		String receivedText = "";
+		if (intent == null) receivedText = "intent null";
+		if (! intent.hasExtra(TERMUX_EXTRA_KEY)) receivedText = "no termux key";
+		if (receivedText.isEmpty()) receivedText = intent.getStringExtra(TERMUX_EXTRA_KEY);
+		return receivedText;
 	}
 
-
-
-	public static boolean commandOutputExists(){
-		return outputFile.exists();
-	}
-
+	
 	private static void commandHandleException(Exception e, final Activity activity){
 		final LinearLayout layout = new LinearLayout(activity);
 		final TextView textView = new TextView(activity);
