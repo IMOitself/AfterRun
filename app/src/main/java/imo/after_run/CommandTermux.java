@@ -1,7 +1,9 @@
 package imo.after_run;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
@@ -57,30 +59,27 @@ public class CommandTermux {
 		}catch(IllegalStateException e){
 			//Not allowed to start service Intent...app is in background...
 			handleException(e, activity);
+			
 		}
 	}
 
 	private static void handleException(Exception e, final Activity activity){
-		final LinearLayout layout = new LinearLayout(activity);
-		final TextView textView = new TextView(activity);
-		final Button button = new Button(activity);
-
-		layout.setOrientation(LinearLayout.VERTICAL);
-
-		textView.setText(e.getMessage());
-		textView.setTextIsSelectable(true);
-
-		button.setText("Maybe Open Termux first?");
-		button.setOnClickListener(new OnClickListener(){
+		new AlertDialog.Builder(activity)
+			.setTitle("Maybe open Termux:API first?")
+			.setMessage(e.getMessage())
+			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				@Override
-				public void onClick(View v){
-					Exception e = openTermuxAPI(activity);
-					if (e != null) textView.setText(e.getMessage());
+				public void onClick(DialogInterface dia, int which) {
+					dia.dismiss();
 				}
-			});
-		layout.addView(textView);
-		layout.addView(button);
-		activity.setContentView(layout);
+			})
+			.setNegativeButton("Open Termux:API", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dia, int which) {
+					openTermuxAPI(activity);
+				}
+			})
+			.create().show();
 	}
 
 	/**
@@ -162,9 +161,6 @@ public class CommandTermux {
 			handler.postDelayed(fileCheckRunnable, checkIntervalMs);
 		}
 
-		/**
-		 * Stops the periodic file checking.
-		 */
 		public static void stop() {
 			if (handler != null && fileCheckRunnable != null) 
 				handler.removeCallbacks(fileCheckRunnable);
