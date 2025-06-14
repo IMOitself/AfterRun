@@ -1,7 +1,6 @@
 package imo.after_run;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -15,12 +14,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 
 public class MainActivity extends Activity 
 {
@@ -28,7 +22,7 @@ public class MainActivity extends Activity
 	Button commandRunBtn;
 	ViewGroup instruction;
 	TextView outputTxt;
-	
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -46,13 +40,13 @@ public class MainActivity extends Activity
 			finish();
             return;
 		}
-		
+
 		final EditText commandEdittext = findViewById(R.id.command_edittext);
 		commandRunBtn = findViewById(R.id.command_run_btn);
 		instruction = findViewById(R.id.instruction);
 		outputTxt = findViewById(R.id.output_txt);
 		outputTxt.setMovementMethod(new ScrollingMovementMethod());
-		
+
 		instruction.setVisibility(View.GONE);
 		commandRunBtn.setOnClickListener(new OnClickListener(){
 				@Override
@@ -60,21 +54,21 @@ public class MainActivity extends Activity
 					commandRunBtn.setEnabled(false);
 					instruction.setVisibility(View.VISIBLE);
 					String command = commandEdittext.getText().toString().trim();
-					TermuxUtilsV3.commandRun(command, MainActivity.this);
+					CommandTermux.run(command, MainActivity.this);
+					
+					Runnable onDetect = new Runnable(){
+						@Override
+						public void run(){
+							commandRunBtn.setEnabled(true);
+							instruction.setVisibility(View.GONE);
+							outputTxt.setText(CommandTermux.OutputDetector.output);
+						}
+					};
+					CommandTermux.OutputDetector.start(onDetect, MainActivity.this);
 				}
 			});
     }
 
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		commandRunBtn.setEnabled(true);
-		instruction.setVisibility(View.GONE);
-		outputTxt.setText(TermuxUtilsV3.commandOutputGet(this));
-	}
-	
-	
     boolean hasStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             return Environment.isExternalStorageManager();
