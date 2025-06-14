@@ -41,7 +41,7 @@ public class MainActivity extends Activity
             return;
 		}
 
-		final EditText commandEdittext = findViewById(R.id.command_edittext);
+		commandEdittext = findViewById(R.id.command_edittext);
 		commandRunBtn = findViewById(R.id.command_run_btn);
 		instruction = findViewById(R.id.instruction);
 		outputTxt = findViewById(R.id.output_txt);
@@ -51,42 +51,46 @@ public class MainActivity extends Activity
 		commandRunBtn.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v){
-					commandRunBtn.setEnabled(false);
-					if (! CommandTermux.backgroundMode) instruction.setVisibility(View.VISIBLE);
-					String command = commandEdittext.getText().toString().trim();
-					
-					Runnable onCancel = new Runnable(){
-						@Override
-						public void run(){
-							commandRunBtn.setEnabled(true);
-						}
-					};
-					
-					CommandTermux.run(command, onCancel, MainActivity.this);
-					
-					Runnable onLoop = new Runnable(){
-						String[] waiting = {"waiting.", "waiting..", "waiting..."};
-						int waitingIndex = 0;
-
-						@Override
-						public void run(){
-							if(waitingIndex >= waiting.length) waitingIndex = 0;
-							outputTxt.setText(waiting[waitingIndex]);
-							waitingIndex++;
-						}
-					};
-					Runnable onDetect = new Runnable(){
-						@Override
-						public void run(){
-							commandRunBtn.setEnabled(true);
-							if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
-							outputTxt.setText(CommandTermux.OutputDetector.output);
-						}
-					};
-					CommandTermux.OutputDetector.start(onLoop, onDetect, MainActivity.this);
+					onButtonClicked();
 				}
 			});
     }
+	
+	void onButtonClicked(){
+		commandRunBtn.setEnabled(false);
+		if (! CommandTermux.backgroundMode) instruction.setVisibility(View.VISIBLE);
+		String command = commandEdittext.getText().toString().trim();
+
+		Runnable onCancel = new Runnable(){
+			@Override
+			public void run(){
+				commandRunBtn.setEnabled(true);
+			}
+		};
+
+		CommandTermux.run(command, onCancel, MainActivity.this);
+
+		Runnable onLoop = new Runnable(){
+			String[] waiting = {"waiting.", "waiting..", "waiting..."};
+			int waitingIndex = 0;
+
+			@Override
+			public void run(){
+				if(waitingIndex >= waiting.length) waitingIndex = 0;
+				outputTxt.setText(waiting[waitingIndex]);
+				waitingIndex++;
+			}
+		};
+		Runnable onDetect = new Runnable(){
+			@Override
+			public void run(){
+				commandRunBtn.setEnabled(true);
+				if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
+				outputTxt.setText(CommandTermux.OutputDetector.output);
+			}
+		};
+		CommandTermux.OutputDetector.start(onLoop, onDetect, MainActivity.this);
+	}
 
     boolean hasStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
