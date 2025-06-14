@@ -38,8 +38,16 @@ public class CommandTermux {
 	public static void permissionRequest(Activity activity){
         activity.requestPermissions(new String[]{"com.termux.permission.RUN_COMMAND"}, 69);
     }
-
+	
 	public static void run(String command, Activity activity){
+		Runnable onCancel = new Runnable(){
+			@Override
+			public void run(){}
+		};
+		run(command, onCancel, activity);
+	}
+
+	public static void run(String command, Runnable onCancel, Activity activity){
 		try{
 			//this supports multi line commands
 			String commandFull = "\n(\n" + command + "\n)";
@@ -59,7 +67,7 @@ public class CommandTermux {
 		}catch(IllegalStateException e){
 			//Not allowed to start service Intent...app is in background...
 			handleException(e, activity);
-			
+			onCancel.run();
 		}
 	}
 

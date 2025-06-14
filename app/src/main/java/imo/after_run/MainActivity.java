@@ -54,7 +54,15 @@ public class MainActivity extends Activity
 					commandRunBtn.setEnabled(false);
 					if (! CommandTermux.backgroundMode) instruction.setVisibility(View.VISIBLE);
 					String command = commandEdittext.getText().toString().trim();
-					CommandTermux.run(command, MainActivity.this);
+					
+					Runnable onCancel = new Runnable(){
+						@Override
+						public void run(){
+							commandRunBtn.setEnabled(true);
+						}
+					};
+					
+					CommandTermux.run(command, onCancel, MainActivity.this);
 					
 					Runnable onLoop = new Runnable(){
 						String[] waiting = {"waiting.", "waiting..", "waiting..."};
