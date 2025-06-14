@@ -56,6 +56,17 @@ public class MainActivity extends Activity
 					String command = commandEdittext.getText().toString().trim();
 					CommandTermux.run(command, MainActivity.this);
 					
+					Runnable onLoop = new Runnable(){
+						String[] waiting = {"waiting.", "waiting..", "waiting..."};
+						int waitingIndex = 0;
+
+						@Override
+						public void run(){
+							if(waitingIndex >= waiting.length) waitingIndex = 0;
+							outputTxt.setText(waiting[waitingIndex]);
+							waitingIndex++;
+						}
+					};
 					Runnable onDetect = new Runnable(){
 						@Override
 						public void run(){
@@ -64,7 +75,7 @@ public class MainActivity extends Activity
 							outputTxt.setText(CommandTermux.OutputDetector.output);
 						}
 					};
-					CommandTermux.OutputDetector.start(onDetect, MainActivity.this);
+					CommandTermux.OutputDetector.start(onLoop, onDetect, MainActivity.this);
 				}
 			});
     }
