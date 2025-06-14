@@ -1,9 +1,9 @@
 # AfterRun
 app that sends command to Termux
 
-| 1 | 2 | 3 
-|:-------:|:-------:|:-------:|
-| ![screenshot 1](assets/screenshot1.jpg) | ![screenshot 2](assets/screenshot2.jpg) | ![screenshot 3](assets/screenshot3.jpg) |
+| 1 | 2 
+|:-------:|:-------:|
+| ![screenshot 1](assets/screenshot1.jpg) | ![screenshot 2](assets/screenshot2.jpg)
 
 ## Making it work
 - must have [Termux](https://f-droid.org/en/packages/com.termux/) and [Termux:API](https://f-droid.org/en/packages/com.termux.api/ ) installed
