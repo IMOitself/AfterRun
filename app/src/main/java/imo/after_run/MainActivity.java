@@ -65,10 +65,10 @@ public class MainActivity extends Activity
 			@Override
 			public void run(){
 				commandRunBtn.setEnabled(true);
+				CommandTermux.OutputDetector.stop();
+				outputTxt.setText("");
 			}
 		};
-
-		CommandTermux.run(command, onCancel, MainActivity.this);
 
 		Runnable onLoop = new Runnable(){
 			String[] waiting = {"waiting.", "waiting..", "waiting..."};
@@ -89,9 +89,12 @@ public class MainActivity extends Activity
 				outputTxt.setText(CommandTermux.OutputDetector.output);
 			}
 		};
-		CommandTermux.OutputDetector.start(onLoop, onDetect, MainActivity.this);
+		CommandTermux.OutputDetector.start(onLoop, onDetect, MainActivity.this); // starts first to be stop if necessary
+		CommandTermux.run(command, onCancel, MainActivity.this);
 	}
 
+	
+	
     boolean hasStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             return Environment.isExternalStorageManager();
