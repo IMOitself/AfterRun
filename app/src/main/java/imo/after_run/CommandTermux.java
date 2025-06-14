@@ -65,7 +65,7 @@ public class CommandTermux {
 
 	private static void handleException(Exception e, final Activity activity){
 		new AlertDialog.Builder(activity)
-			.setTitle("Maybe open Termux:API first?")
+			.setTitle("Maybe open Termux first?")
 			.setMessage(e.getMessage())
 			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				@Override
@@ -73,7 +73,7 @@ public class CommandTermux {
 					dia.dismiss();
 				}
 			})
-			.setNegativeButton("Open Termux:API", new DialogInterface.OnClickListener() {
+			.setNegativeButton("Open Termux", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dia, int which) {
 					openTermuxAPI(activity);
@@ -96,7 +96,6 @@ public class CommandTermux {
 			intent.setComponent(new ComponentName("com.termux", "com.termux.app.TermuxActivity"));
 			activity.startActivity(intent);
 			Toast.makeText(activity, "Go back to the app again:D", Toast.LENGTH_LONG).show();
-			activity.finishAffinity();
 		} catch (Exception e) {
 			return e;
 		}
