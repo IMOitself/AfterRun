@@ -26,6 +26,8 @@ public class CommandTermux {
 	 termux-setup-storage
 
 	 **/
+	 
+	public static boolean backgroundMode = true;
 
 	public static boolean permissionIsGranted(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
@@ -49,6 +51,7 @@ public class CommandTermux {
 			intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
 			intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
 			intent.putExtra("com.termux.RUN_COMMAND_SHELL_NAME", "After Run");
+			if (backgroundMode) intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", true);
 			activity.startService(intent);
 
 		}catch(IllegalStateException e){
@@ -105,7 +108,7 @@ public class CommandTermux {
 
 		private static Handler handler;
 		private static Runnable fileCheckRunnable;
-		private static final int checkIntervalMs = 500;
+		private static final int checkIntervalMs = 250;
 		private static File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
 		public static String output = "";
 
@@ -115,8 +118,8 @@ public class CommandTermux {
 				@Override
 				public void run(){
 					if(! outputFile.exists()){
-						restart();
 						onLoop.run();
+						restart();
 						return;
 					}
 					try {

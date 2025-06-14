@@ -52,7 +52,7 @@ public class MainActivity extends Activity
 				@Override
 				public void onClick(View v){
 					commandRunBtn.setEnabled(false);
-					instruction.setVisibility(View.VISIBLE);
+					if (! CommandTermux.backgroundMode) instruction.setVisibility(View.VISIBLE);
 					String command = commandEdittext.getText().toString().trim();
 					CommandTermux.run(command, MainActivity.this);
 					
@@ -71,7 +71,7 @@ public class MainActivity extends Activity
 						@Override
 						public void run(){
 							commandRunBtn.setEnabled(true);
-							instruction.setVisibility(View.GONE);
+							if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
 							outputTxt.setText(CommandTermux.OutputDetector.output);
 						}
 					};
