@@ -30,6 +30,7 @@ public class CommandTermux {
 	 **/
 	 
 	public static boolean backgroundMode = true;
+	private static final String COMMAND_END_KEY = "END HEHE";
 
 	public static boolean permissionIsGranted(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
@@ -54,7 +55,11 @@ public class CommandTermux {
 
 			//output to a file
 			commandFull += "> " + OutputDetector.outputFile.getAbsolutePath();
-
+			
+			commandFull += "\necho \"" + COMMAND_END_KEY + "\"";
+			commandFull += " >> " + OutputDetector.outputFile.getAbsolutePath();
+			
+			
 			Intent intent = new Intent();
 			intent.setClassName("com.termux", "com.termux.app.RunCommandService");
 			intent.setAction("com.termux.RUN_COMMAND");
@@ -128,10 +133,15 @@ public class CommandTermux {
 						restart();
 						return;
 					}
+					boolean outputHasEnd = false;
 					try {
 						BufferedReader reader = new BufferedReader(new FileReader(outputFile));
 						String line;
 						while ((line = reader.readLine()) != null) {
+							if(line.contains((COMMAND_END_KEY))){
+								outputHasEnd = true;
+								break;
+							}
 							output += "\n" + line;
 							onLoop.run();
 						}
@@ -141,7 +151,7 @@ public class CommandTermux {
 						stop();
 					}
 
-					if (! output.isEmpty()){
+					if (! output.isEmpty() && outputHasEnd){
 						outputFile.delete();
 						onDetect.run();
 						output = ""; //clear
