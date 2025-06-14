@@ -10,7 +10,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:hint="enter bash command here..."
-		android:id="@+id/command_edittext"/>
+		android:id="@+id/command_edittext"
+		android:typeface="monospace"/>
 
 	<Button
 		android:layout_width="match_parent"
@@ -42,7 +43,9 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="Output:"
-		android:id="@+id/output_txt"/>
+		android:id="@+id/output_txt"
+		android:typeface="monospace"
+		android:textIsSelectable="true"/>
 
 </LinearLayout>
 
