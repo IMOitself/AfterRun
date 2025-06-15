@@ -22,6 +22,9 @@ comming soon...
 
 ## Troubleshooting
 #### app crashes instantly when opened:
+<details>
+  <summary>Solution:</summary>
+  
 ensure you have [Termux](https://f-droid.org/en/packages/com.termux/) and [Termux:API](https://f-droid.org/en/packages/com.termux.api/ ) installed.
 <details>
   <summary>Why did it happen:</summary>
@@ -29,10 +32,14 @@ ensure you have [Termux](https://f-droid.org/en/packages/com.termux/) and [Termu
   ```a termux permission is set on AndroidManifest. The app will crash instantly if termux is not installed```
   
 </details>
+</details>
 <br>
 
 #### Error: Termux Plugin Execution Command Error
 ![error 1](assets/error1.jpg)
+<details>
+  <summary>Solution:</summary>
+  
 you should run this command on Termux first:
 ```
   pkg install termux-api
@@ -46,11 +53,14 @@ NOTE: this might pop up again even if u already run it. just close the app and r
   ```termux:api has some requirements in order to run. like setting allow-external-apps to true in the hidden termux.properties file```
   
 </details> 
-
+</details> 
 <br>
 
 #### Maybe open Termux first?
 ![error 2](assets/error2.jpg)
+<details>
+  <summary>Solution:</summary>
+  
 This is perfectly normal!<br>just open Termux and go back to the app again.
 <details>
   <summary>Why did it happen:</summary>
