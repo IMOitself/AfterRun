@@ -32,7 +32,7 @@ ensure you have [Termux](https://f-droid.org/en/packages/com.termux/) and [Termu
 <br>
 
 #### Error: Termux Plugin Execution Command Error
-[SCREENSHOT OF NOTIFICATION]
+![error 1](assets/error1.jpg)
 you should run this command on Termux first:
 ```
   pkg install termux-api
@@ -50,8 +50,7 @@ NOTE: this might pop up again even if u already run it. just close the app and r
 <br>
 
 #### Maybe open Termux first?
-[SCREENSHOT OF DIALOG]
-
+![error 2](assets/error2.jpg)
 This is perfectly normal!<br>just open Termux and go back to the app again.
 <details>
   <summary>Why did it happen:</summary>
