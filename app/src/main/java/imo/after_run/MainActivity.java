@@ -27,7 +27,7 @@ public class MainActivity extends Activity
 
 		commandEdittext = findViewById(R.id.command_edittext);
 		commandRunBtn = findViewById(R.id.command_run_btn);
-		instruction = findViewById(R.id.instruction);
+		instruction = findViewById(R.id.instruction); // optional. its just to show user what to do
 		outputTxt = findViewById(R.id.output_txt);
 		outputTxt.setMovementMethod(new ScrollingMovementMethod());
 
@@ -45,15 +45,17 @@ public class MainActivity extends Activity
 		if (! CommandTermux.backgroundMode) instruction.setVisibility(View.VISIBLE);
 		String command = commandEdittext.getText().toString().trim();
 
+		// this runs if sending command to termux encounter an error
 		Runnable onCancel = new Runnable(){
 			@Override
 			public void run(){
+				CommandTermux.OutputDetector.stop(); // still waits for output and should be stopped
 				commandRunBtn.setEnabled(true);
-				CommandTermux.OutputDetector.stop();
 				outputTxt.setText("");
 			}
 		};
 
+		// optional. this runs while detecting command output
 		Runnable onLoop = new Runnable(){
 			String[] waiting = {"waiting.", "waiting..", "waiting..."};
 			int waitingIndex = 0;
@@ -65,14 +67,18 @@ public class MainActivity extends Activity
 				waitingIndex++;
 			}
 		};
+		
+		// this runs after command return the output
 		Runnable onDetect = new Runnable(){
 			@Override
 			public void run(){
 				commandRunBtn.setEnabled(true);
-				if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
 				outputTxt.setText(CommandTermux.OutputDetector.output);
+				if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
 			}
 		};
+		
+		// start detector first so that it can be stopped by onCancel
 		CommandTermux.OutputDetector.start(onLoop, onDetect, MainActivity.this); // starts first to be stop if necessary
 		CommandTermux.run(command, onCancel, MainActivity.this);
 	}
