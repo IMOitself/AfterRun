@@ -64,7 +64,7 @@ This is perfectly normal!<br>just open Termux and go back to the app again.
 <details>
   <summary>Why did it happen:</summary>
   
-termux:api needs some requirements to run. like disabling battery optimization and granting draw over apps. Once you satisfy those, you might not get this dialog again
+termux:api has some requirements in order to run. like disabling battery optimization and granting draw over apps. Once you satisfy those, you might not get this dialog again
   
 </details>
 </details>
