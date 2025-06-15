@@ -1,5 +1,5 @@
 # AfterRun
-app that sends command to Termux
+android app that sends & receive command from Termux
 
 | 1 | 2 
 |:-------:|:-------:|
