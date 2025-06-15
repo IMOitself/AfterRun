@@ -55,6 +55,7 @@ public class CommandTermux {
 
 			//output to a file
 			commandFull += "> " + OutputDetector.outputFile.getAbsolutePath();
+			commandFull += " 2>&1"; //include error
 			
 			commandFull += "\necho \"" + COMMAND_END_KEY + "\"";
 			commandFull += " >> " + OutputDetector.outputFile.getAbsolutePath();
