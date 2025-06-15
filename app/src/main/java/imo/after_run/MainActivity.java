@@ -42,8 +42,8 @@ public class MainActivity extends Activity
             return;
         }
 
-		if(! CommandTermux.permissionIsGranted(this)){
-			CommandTermux.permissionRequest(this);
+		if(! CommandTermux.hasTermuxPermission(this)){
+			CommandTermux.requestTermuxPermission(this);
 			finish();
             return;
 		}

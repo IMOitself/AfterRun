@@ -30,11 +30,21 @@ public class CommandTermux {
 	public static boolean backgroundMode = true;
 	private static final String COMMAND_END_KEY = "END HEHE";
 
+	@Deprecated
 	public static boolean permissionIsGranted(Activity activity){
-        return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
+        return hasTermuxPermission(activity);
     }
 
+	@Deprecated
 	public static void permissionRequest(Activity activity){
+        requestTermuxPermission(activity);
+    }
+	
+	public static boolean hasTermuxPermission(Activity activity){
+        return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
+    }
+	
+	public static void requestTermuxPermission(Activity activity){
         activity.requestPermissions(new String[]{"com.termux.permission.RUN_COMMAND"}, 69);
     }
 	
@@ -45,7 +55,7 @@ public class CommandTermux {
             return activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
     }
-
+	
     public static void requestStoragePermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
