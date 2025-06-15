@@ -27,6 +27,20 @@ public class CommandTermux {
 
 	 **/
 	 
+	/**
+	 * put this on AndroidManifest.xml (above "<application "):
+
+	 <!-- Storage Permission -->
+	 <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+	 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+	 android:maxSdkVersion="28" /> <!-- Only for Android 9 (API 28) and below -->
+	 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	 <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- For Android 11+ -->
+
+	 <!-- Termux Permission -->
+	 <uses-permission android:name="com.termux.permission.RUN_COMMAND"/>
+
+	 **/
 	public static boolean backgroundMode = true;
 	private static final String COMMAND_END_KEY = "END HEHE";
 
@@ -56,7 +70,7 @@ public class CommandTermux {
         }
     }
 	
-    public static void requestStoragePermission(Activity activity) {
+	public static void requestStoragePermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
             intent.setData(Uri.parse("package:" + activity.getPackageName()));
@@ -66,6 +80,22 @@ public class CommandTermux {
             activity.requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
         }
     }
+	
+	public static void checkAndRequestPermissions(Activity activity){
+		if(! hasStoragePermission(activity)){
+            requestStoragePermission(activity);
+            activity.finish();
+            return;
+        }
+
+		if(! hasTermuxPermission(activity)){
+			requestTermuxPermission(activity);
+			activity.finish();
+            return;
+		}
+	}
+	
+    
 	
 	public static void run(String command, Activity activity){
 		Runnable onCancel = new Runnable(){

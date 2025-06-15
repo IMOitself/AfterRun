@@ -22,31 +22,8 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-		/**
-		 * put this on AndroidManifest.xml (above "<application "):
-
-		 <!-- Storage Permission -->
-		 <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-		 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-		 android:maxSdkVersion="28" /> <!-- Only for Android 9 (API 28) and below -->
-		 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-		 <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- For Android 11+ -->
-
-		 <!-- Termux Permission -->
-		 <uses-permission android:name="com.termux.permission.RUN_COMMAND"/>
-
-		 **/
-        if(! CommandTermux.hasStoragePermission(this)){
-            CommandTermux.requestStoragePermission(this);
-            finish();
-            return;
-        }
-
-		if(! CommandTermux.hasTermuxPermission(this)){
-			CommandTermux.requestTermuxPermission(this);
-			finish();
-            return;
-		}
+		
+        CommandTermux.checkAndRequestPermissions(this);
 
 		commandEdittext = findViewById(R.id.command_edittext);
 		commandRunBtn = findViewById(R.id.command_run_btn);
