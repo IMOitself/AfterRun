@@ -62,8 +62,8 @@ This is perfectly normal!<br>just open Termux and go back to the app again.
 <br><br><br>
 
 ## Edit this AfterRun project
+will have separate md file for this topic someday... 
 - this is an AIDE project
 - which means it can only be build using [AIDE](https://www.android-ide.com/)
 - but the code is java so its compatible with Android Studio *if u are satisfied to copy and paste*
-- no ```kotlin```, ```java version 8+```, ```appcompat```, ```androidx``` and ```any libraries``` is used. And it must remain not to be
-- will have separate md file for this topic someday...
+- no ```kotlin```, ```java version 8+```, ```appcompat```, ```androidx``` and ```any libraries``` please.
