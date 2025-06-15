@@ -127,29 +127,39 @@ public class CommandTermux {
 					}
 					boolean outputHasEnd = false;
 					try {
-						BufferedReader reader = new BufferedReader(new FileReader(outputFile));
+						BufferedReader isCompleteChecker = new BufferedReader(new FileReader(outputFile));
 						String line;
-						while ((line = reader.readLine()) != null) {
+						while ((line = isCompleteChecker.readLine()) != null) {
 							if(line.contains((COMMAND_END_KEY))){
 								outputHasEnd = true;
 								break;
 							}
-							output += "\n" + line;
 							onLoop.run();
 						}
-						output = output.trim();
-					} catch (IOException e) {
-						handleException(e, activity);
-						stop();
-					}
-
-					if (! output.isEmpty() && outputHasEnd){
+						
+						if(! outputHasEnd){
+							onLoop.run();
+							restart();
+							return;
+						}
+						
+						BufferedReader finalReader = new BufferedReader(new FileReader(outputFile));
+						String finalLines = "";
+						String finalLine;
+						while ((finalLine = finalReader.readLine()) != null) {
+							if(finalLine.contains(COMMAND_END_KEY)) break;
+							finalLines += "\n" + finalLine;
+							onLoop.run();
+						}
+						output = finalLines.trim();
 						outputFile.delete();
 						onDetect.run();
 						output = ""; //clear
 						stop();
-					}else{
-						restart();
+						
+					} catch (IOException e) {
+						handleException(e, activity);
+						stop();
 					}
 				}
 			};
