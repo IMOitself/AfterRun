@@ -1,13 +1,7 @@
 package imo.after_run;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,15 +16,28 @@ public class MainActivity extends Activity
 	Button commandRunBtn;
 	ViewGroup instruction;
 	TextView outputTxt;
-
+	
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+		/**
+		 * put this on AndroidManifest.xml (above "<application "):
 
-        if(! hasStoragePermission()){
-            requestStoragePermission();
+		 <!-- Storage Permission -->
+		 <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+		 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+		 android:maxSdkVersion="28" /> <!-- Only for Android 9 (API 28) and below -->
+		 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+		 <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- For Android 11+ -->
+
+		 <!-- Termux Permission -->
+		 <uses-permission android:name="com.termux.permission.RUN_COMMAND"/>
+
+		 **/
+        if(! CommandTermux.hasStoragePermission(this)){
+            CommandTermux.requestStoragePermission(this);
             finish();
             return;
         }
@@ -92,41 +99,4 @@ public class MainActivity extends Activity
 		CommandTermux.OutputDetector.start(onLoop, onDetect, MainActivity.this); // starts first to be stop if necessary
 		CommandTermux.run(command, onCancel, MainActivity.this);
 	}
-
-	
-	
-	/**
-	 * put this on AndroidManifest.xml (above "<application "):
-	 
-	 <!-- Storage Permission -->
-	 <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-	 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-	 android:maxSdkVersion="28" /> <!-- Only for Android 9 (API 28) and below -->
-	 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	 <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- For Android 11+ -->
-	 
-	 <!-- Termux Permission -->
-	 <uses-permission android:name="com.termux.permission.RUN_COMMAND"/>
-	 
-	 **/
-	
-	
-    boolean hasStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return Environment.isExternalStorageManager();
-        } else {
-            return checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        }
-    }
-
-    void requestStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-        } else {
-			requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
-            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-        }
-    }
 }
