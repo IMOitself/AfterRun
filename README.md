@@ -5,6 +5,8 @@ app that sends command to Termux
 |:-------:|:-------:|
 | ![screenshot 1](assets/screenshot1.jpg) | ![screenshot 2](assets/screenshot2.jpg)
 
+<br>
+
 ## Making it work
 - must have [Termux](https://f-droid.org/en/packages/com.termux/) and [Termux:API](https://f-droid.org/en/packages/com.termux.api/ ) installed
 - must have run this command on Termux first:
@@ -13,6 +15,14 @@ app that sends command to Termux
   sed -i 's/# allow-external-apps = true/allow-external-apps = true/g' ~/.termux/termux.properties
   termux-setup-storage
   ```
+
+<br><br>
+
+## Troubleshooting
+#### app crashes instantly when opened:
+- ensure you have [Termux](https://f-droid.org/en/packages/com.termux/) and [Termux:API](https://f-droid.org/en/packages/com.termux.api/ ) installed.
+
+<br><br><br>
 
 ## Edit this AfterRun project
 - this is an AIDE project
