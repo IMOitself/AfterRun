@@ -90,30 +90,21 @@ public class CommandTermux {
 			.setNegativeButton("Open Termux", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dia, int which) {
-					openTermuxAPI(activity);
+					try {
+						openTermux(activity);
+					} catch (Exception e) {
+						handleException(e, activity);
+					}
 				}
 			})
 			.create().show();
 	}
 
-	/**
-	 * sample usage:
-
-	 TermuxUtils.openTermuxAPI(MainActivity.this);
-
-	 * need to open Termux:API first if runCommand() cant start service
-
-	 **/
-	public static Exception openTermuxAPI(Activity activity){
-		try {
-			Intent intent = new Intent();
-			intent.setComponent(new ComponentName("com.termux", "com.termux.app.TermuxActivity"));
-			activity.startActivity(intent);
-			Toast.makeText(activity, "Go back to the app again:D", Toast.LENGTH_LONG).show();
-		} catch (Exception e) {
-			return e;
-		}
-		return null;
+	public static void openTermux(final Activity activity) throws Exception{
+		String packageName = "com.termux";
+		Intent intent = activity.getPackageManager().getLaunchIntentForPackage(packageName);
+		activity.startActivity(intent);
+		Toast.makeText(activity, "Go back to the app again:D..", Toast.LENGTH_LONG).show();
 	}
 
 	public static class OutputDetector {
