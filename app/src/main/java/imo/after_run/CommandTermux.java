@@ -123,6 +123,19 @@ public class CommandTermux {
     }
     
     public void run(){
+        if(onLoop == null){
+            onLoop = new Runnable(){
+                @Override
+                public void run(){}
+            };
+        }
+        if(onDetect == null){
+            onDetect = new Runnable(){
+                @Override
+                public void run(){}
+            };
+        }
+        
         // starts first to be stop if necessary
         OutputDetector.start(onLoop, onDetect, mActivity);
 		
