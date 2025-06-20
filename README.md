@@ -5,6 +5,9 @@ android app that sends & receive command from Termux
 |:-------:|:-------:|
 | ![screenshot 1](assets/screenshot1.jpg) | ![screenshot 2](assets/screenshot2.jpg)
 ## Download
+> [!WARNING]
+> This project is at its early stages and is prone to bugs
+
 comming soon...
 
 <br>
