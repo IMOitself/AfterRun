@@ -44,42 +44,35 @@ public class MainActivity extends Activity
 		commandRunBtn.setEnabled(false);
 		if (! CommandTermux.backgroundMode) instruction.setVisibility(View.VISIBLE);
 		String command = commandEdittext.getText().toString().trim();
-
-		// this runs if sending command to termux encounter an error
-		Runnable onCancel = new Runnable(){
-			@Override
-			public void run(){
-				CommandTermux.OutputDetector.stop(); // still waits for output and should be stopped
-				commandRunBtn.setEnabled(true);
-				outputTxt.setText("");
-			}
-		};
-
-		// optional. this runs while detecting command output
-		Runnable onLoop = new Runnable(){
-			String[] waiting = {"waiting.", "waiting..", "waiting..."};
-			int waitingIndex = 0;
-
-			@Override
-			public void run(){
-				if(waitingIndex >= waiting.length) waitingIndex = 0;
-				outputTxt.setText(waiting[waitingIndex]);
-				waitingIndex++;
-			}
-		};
 		
-		// this runs after command return the output
-		Runnable onDetect = new Runnable(){
-			@Override
-			public void run(){
-				commandRunBtn.setEnabled(true);
-				outputTxt.setText(CommandTermux.OutputDetector.output);
-				if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
-			}
-		};
-		
-		// start detector first so that it can be stopped by onCancel
-		CommandTermux.OutputDetector.start(onLoop, onDetect, MainActivity.this); // starts first to be stop if necessary
-		CommandTermux.run(command, onCancel, MainActivity.this);
+        new CommandTermux(command, MainActivity.this)
+            .setOnCancel(new Runnable(){// this runs if sending command to termux encounter an error
+                @Override
+                public void run(){
+                    CommandTermux.OutputDetector.stop(); // still waits for output and should be stopped
+                    commandRunBtn.setEnabled(true);
+                    outputTxt.setText("");
+                }
+            })
+        .setOnLoop(new Runnable(){
+                String[] waiting = {"waiting.", "waiting..", "waiting..."};
+                int waitingIndex = 0;
+
+                @Override
+                public void run(){
+                    if(waitingIndex >= waiting.length) waitingIndex = 0;
+                    outputTxt.setText(waiting[waitingIndex]);
+                    waitingIndex++;
+                }
+            })
+        .setOnDetect(new Runnable(){
+                @Override
+                public void run(){
+                    commandRunBtn.setEnabled(true);
+                    outputTxt.setText(CommandTermux.OutputDetector.output);
+                    if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
+                }
+            })
+        .run();
 	}
 }

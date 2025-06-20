@@ -96,15 +96,52 @@ public class CommandTermux {
 	}
 	
     
+    private String command;
+    private Activity mActivity;
+    private Runnable onDetect;
+    private Runnable onLoop;
+    private Runnable onCancel;
+    
+    public CommandTermux(String command, Activity mActivity){
+        this.command = command;
+        this.mActivity = mActivity;
+    }
+    
+    public CommandTermux setOnDetect(Runnable runnable){
+        onDetect = runnable;
+        return this;
+    }
+    
+    public CommandTermux setOnLoop(Runnable runnable){
+        onLoop = runnable;
+        return this;
+    }
+    
+    public CommandTermux setOnCancel(Runnable runnable){
+        onCancel = runnable;
+        return this;
+    }
+    
+    public void run(){
+        // starts first to be stop if necessary
+        OutputDetector.start(onLoop, onDetect, mActivity);
+		
+        if(onCancel == null){
+            onCancel = new Runnable(){
+                @Override
+                public void run(){}
+            };
+        }
+        
+        run(command, onCancel, mActivity);
+    }
 	
-	public static void run(String command, Activity activity){
-		Runnable onCancel = new Runnable(){
-			@Override
-			public void run(){}
-		};
-		run(command, onCancel, activity);
-	}
-
+    
+    
+    
+    
+    
+	
 	public static void run(String command, Runnable onCancel, Activity activity){
 		try{
 			//this supports multi line commands
@@ -131,6 +168,7 @@ public class CommandTermux {
 			//Not allowed to start service Intent...app is in background...
 			handleException(e, activity);
 			onCancel.run();
+            OutputDetector.stop();
 		}
 	}
 
@@ -148,7 +186,9 @@ public class CommandTermux {
 				@Override
 				public void onClick(DialogInterface dia, int which) {
 					try {
+                        dia.dismiss();
 						openTermux(activity);
+                        
 					} catch (Exception e) {
 						handleException(e, activity);
 					}
@@ -173,6 +213,7 @@ public class CommandTermux {
 		public static String output = "";
 
 		public static void start(final Runnable onLoop, final Runnable onDetect, final Activity activity) {
+            onLoop.run();
 			handler = new Handler(activity.getMainLooper());
 			fileCheckRunnable = new Runnable(){
 				@Override
