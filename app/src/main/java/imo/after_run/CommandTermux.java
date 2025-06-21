@@ -148,6 +148,14 @@ public class CommandTermux {
         
         run(command, onCancel, mActivity);
     }
+    
+    public static String getOutput(){
+        return OutputDetector.output;
+    }
+    
+    public static void stopDetector(){
+        OutputDetector.stop();
+    }
 	
     
     
@@ -155,7 +163,7 @@ public class CommandTermux {
     
     
 	
-	public static void run(String command, Runnable onCancel, Activity activity){
+	private static void run(String command, Runnable onCancel, Activity activity){
 		try{
 			//this supports multi line commands
 			String commandFull = "\n(\n" + command + "\n)";
@@ -217,7 +225,7 @@ public class CommandTermux {
 		Toast.makeText(activity, "Go back to the app again:D..", Toast.LENGTH_LONG).show();
 	}
 
-	public static class OutputDetector {
+	private static class OutputDetector {
 
 		private static Handler handler;
 		private static Runnable fileCheckRunnable;
@@ -225,7 +233,7 @@ public class CommandTermux {
 		private static File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
 		public static String output = "";
 
-		public static void start(final Runnable onLoop, final Runnable onDetect, final Activity activity) {
+		private static void start(final Runnable onLoop, final Runnable onDetect, final Activity activity) {
             onLoop.run();
 			handler = new Handler(activity.getMainLooper());
 			fileCheckRunnable = new Runnable(){
@@ -279,19 +287,11 @@ public class CommandTermux {
 			handler.post(fileCheckRunnable);
 		}
 
-		public static void start(final Runnable onDetect, final Activity activity) {
-			Runnable onLoop = new Runnable(){
-				@Override
-				public void run(){}
-			};
-			start(onLoop, onDetect, activity);
-		}
-
 		private static void restart(){
 			handler.postDelayed(fileCheckRunnable, checkIntervalMs);
 		}
 
-		public static void stop() {
+		private static void stop() {
 			if (handler != null && fileCheckRunnable != null) 
 				handler.removeCallbacks(fileCheckRunnable);
 		}

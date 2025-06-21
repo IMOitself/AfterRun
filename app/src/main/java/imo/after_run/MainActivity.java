@@ -49,7 +49,7 @@ public class MainActivity extends Activity
             .setOnCancel(new Runnable(){// this runs if sending command to termux encounter an error
                 @Override
                 public void run(){
-                    CommandTermux.OutputDetector.stop(); // still waits for output and should be stopped
+                    CommandTermux.stopDetector(); // still waits for output and should be stopped
                     commandRunBtn.setEnabled(true);
                     outputTxt.setText("");
                 }
@@ -69,7 +69,7 @@ public class MainActivity extends Activity
                 @Override
                 public void run(){
                     commandRunBtn.setEnabled(true);
-                    outputTxt.setText(CommandTermux.OutputDetector.output);
+                    outputTxt.setText(CommandTermux.getOutput());
                     if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
                 }
             })
