@@ -8,7 +8,7 @@ android app that sends & receive command from Termux
 > [!WARNING]
 > This project is at its early stages and is prone to bugs
 
-comming soon...
+[![Download](https://img.shields.io/badge/compiled.apk-blue?style=for-the-badge)](https://github.com/IMOitself/AfterRun/blob/master/compiled.apk)
 
 <br>
 
