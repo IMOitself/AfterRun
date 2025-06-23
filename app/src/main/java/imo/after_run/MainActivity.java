@@ -53,7 +53,7 @@ public class MainActivity extends Activity
                     if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
                 }
             })
-            .setOnCancel(new Runnable(){// this runs if sending command to termux encounter an error
+            .setOnError(new Runnable(){// this runs if sending command to termux encounter an error
                 @Override
                 public void run(){
                     CommandTermux.stopDetector(); // still waits for output and should be stopped

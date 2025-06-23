@@ -108,19 +108,34 @@ public class CommandTermux {
         this.mActivity = mActivity;
     }
     
+    @Deprecated
     public CommandTermux setOnDetect(Runnable runnable){
         onDetect = runnable;
         return this;
     }
     
+    @Deprecated
     public CommandTermux setOnLoop(Runnable runnable){
         onLoop = runnable;
         return this;
     }
     
+    @Deprecated
     public CommandTermux setOnCancel(Runnable runnable){
         onCancel = runnable;
         return this;
+    }
+    
+    public CommandTermux setOnEnd(Runnable runnable){
+        return setOnDetect(runnable);
+    }
+    
+    public CommandTermux setOnLoading(Runnable runnable){
+        return setOnLoop(runnable);
+    }
+    
+    public CommandTermux setOnError(Runnable runnable){
+        return setOnCancel(runnable);
     }
     
     //quick setup for setting output to textview
@@ -151,7 +166,7 @@ public class CommandTermux {
     }
     
     public CommandTermux quickSetOutputWithLoading(final TextView textview, final Runnable onOutput){
-        return quickSetOutputWithLoading(textview, onOutput, "waiting");;
+        return quickSetOutputWithLoading(textview, onOutput, "waiting");
     }
     
     public CommandTermux quickSetOutputWithLoading(final TextView textview, final Runnable onOutput, final String loadingText){
