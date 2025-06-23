@@ -46,31 +46,19 @@ public class MainActivity extends Activity
 		String command = commandEdittext.getText().toString().trim();
 		
         new CommandTermux(command, MainActivity.this)
+            .quickSetOutputWithLoading(outputTxt, new Runnable(){
+                @Override
+                public void run(){
+                    commandRunBtn.setEnabled(true);
+                    if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
+                }
+            })
             .setOnCancel(new Runnable(){// this runs if sending command to termux encounter an error
                 @Override
                 public void run(){
                     CommandTermux.stopDetector(); // still waits for output and should be stopped
                     commandRunBtn.setEnabled(true);
                     outputTxt.setText("");
-                }
-            })
-        .setOnLoop(new Runnable(){
-                String[] waiting = {"waiting.", "waiting..", "waiting..."};
-                int waitingIndex = 0;
-
-                @Override
-                public void run(){
-                    if(waitingIndex >= waiting.length) waitingIndex = 0;
-                    outputTxt.setText(waiting[waitingIndex]);
-                    waitingIndex++;
-                }
-            })
-        .setOnDetect(new Runnable(){
-                @Override
-                public void run(){
-                    commandRunBtn.setEnabled(true);
-                    outputTxt.setText(CommandTermux.getOutput());
-                    if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
                 }
             })
         .run();

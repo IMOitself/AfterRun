@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import android.widget.TextView;
 
 public class CommandTermux {
 	/** 
@@ -121,6 +122,59 @@ public class CommandTermux {
         onCancel = runnable;
         return this;
     }
+    
+    //quick setup for setting output to textview
+    public CommandTermux quickSetOutput(final TextView textview){
+        quickSetOutput(textview, null);
+        return this;
+    }
+    
+    public CommandTermux quickSetOutput(final TextView textview, final Runnable onOutput){
+        //WILL OVERRIDE setOnDetect AND setOnCancel
+        this.setOnDetect(new Runnable(){
+                @Override
+                public void run(){
+                    textview.setText(getOutput());
+                    if(onOutput != null) onOutput.run();
+                }
+            });
+        this.setOnCancel(new Runnable(){
+                @Override
+                public void run(){
+                    textview.setText("try again");
+                }
+            });
+        return this;
+    }
+    
+    public CommandTermux quickSetOutputWithLoading(final TextView textview){
+        quickSetOutputWithLoading(textview, null);
+        return this;
+    }
+    
+    public CommandTermux quickSetOutputWithLoading(final TextView textview, final Runnable onOutput){
+        quickSetOutputWithLoading(textview, onOutput, "waiting");
+        return this;
+    }
+    
+    public CommandTermux quickSetOutputWithLoading(final TextView textview, final Runnable onOutput, final String loadingText){
+        //WILL OVERRIDE setOnDetect, setOnCancel AND setOnLoop
+        quickSetOutput(textview, onOutput);
+        this.setOnLoop(new Runnable(){
+                String[] waiting = {loadingText+".", loadingText+"..", loadingText+"..."};
+                int waitingIndex = 0;
+
+                @Override
+                public void run(){
+                    if(waitingIndex >= waiting.length) waitingIndex = 0;
+                    textview.setText(waiting[waitingIndex]);
+                    waitingIndex++;
+                }
+            });
+        return this;
+    }
+    
+    
     
     public void run(){
         if(onLoop == null){
