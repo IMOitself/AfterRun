@@ -99,43 +99,29 @@ public class CommandTermux {
     
     private String command;
     private Activity mActivity;
-    private Runnable onDetect;
-    private Runnable onLoop;
-    private Runnable onCancel;
+    
+    private Runnable onEnd;
+    private Runnable onLoading;
+    private Runnable onError;
     
     public CommandTermux(String command, Activity mActivity){
         this.command = command;
         this.mActivity = mActivity;
     }
     
-    @Deprecated
-    public CommandTermux setOnDetect(Runnable runnable){
-        onDetect = runnable;
-        return this;
-    }
-    
-    @Deprecated
-    public CommandTermux setOnLoop(Runnable runnable){
-        onLoop = runnable;
-        return this;
-    }
-    
-    @Deprecated
-    public CommandTermux setOnCancel(Runnable runnable){
-        onCancel = runnable;
-        return this;
-    }
-    
     public CommandTermux setOnEnd(Runnable runnable){
-        return setOnDetect(runnable);
+        onEnd = runnable;
+        return this;
     }
     
     public CommandTermux setOnLoading(Runnable runnable){
-        return setOnLoop(runnable);
+        onLoading = runnable;
+        return this;
     }
     
     public CommandTermux setOnError(Runnable runnable){
-        return setOnCancel(runnable);
+        onError = runnable;
+        return this;
     }
     
     //quick setup for setting output to textview
@@ -145,14 +131,14 @@ public class CommandTermux {
     
     public CommandTermux quickSetOutput(final TextView textview, final Runnable onOutput){
         //WILL OVERRIDE setOnDetect AND setOnCancel
-        this.setOnDetect(new Runnable(){
+        this.setOnEnd(new Runnable(){
                 @Override
                 public void run(){
                     textview.setText(getOutput());
                     if(onOutput != null) onOutput.run();
                 }
             });
-        this.setOnCancel(new Runnable(){
+        this.setOnError(new Runnable(){
                 @Override
                 public void run(){
                     textview.setText("try again");
@@ -172,7 +158,7 @@ public class CommandTermux {
     public CommandTermux quickSetOutputWithLoading(final TextView textview, final Runnable onOutput, final String loadingText){
         //WILL OVERRIDE setOnDetect, setOnCancel AND setOnLoop
         quickSetOutput(textview, onOutput);
-        this.setOnLoop(new Runnable(){
+        this.setOnLoading(new Runnable(){
                 String[] waiting = {loadingText+".", loadingText+"..", loadingText+"..."};
                 int waitingIndex = 0;
 
@@ -191,7 +177,7 @@ public class CommandTermux {
     }
     
     public CommandTermux setLoading(final TextView textview, final String loadingText){
-        this.setOnLoop(new Runnable(){
+        this.setOnLoading(new Runnable(){
                 String[] waiting = {loadingText+".", loadingText+"..", loadingText+"..."};
                 int waitingIndex = 0;
 
@@ -208,30 +194,30 @@ public class CommandTermux {
     
     
     public void run(){
-        if(onLoop == null){
-            onLoop = new Runnable(){
+        if(onLoading == null){
+            onLoading = new Runnable(){
                 @Override
                 public void run(){}
             };
         }
-        if(onDetect == null){
-            onDetect = new Runnable(){
+        if(onEnd == null){
+            onEnd = new Runnable(){
                 @Override
                 public void run(){}
             };
         }
         
         // starts first to be stop if necessary
-        OutputDetector.start(onLoop, onDetect, mActivity);
+        OutputDetector.start(onLoading, onEnd, mActivity);
 		
-        if(onCancel == null){
-            onCancel = new Runnable(){
+        if(onError == null){
+            onError = new Runnable(){
                 @Override
                 public void run(){}
             };
         }
         
-        run(command, onCancel, mActivity);
+        run(command, onError, mActivity);
     }
     
     public static String getOutput(){
@@ -245,9 +231,8 @@ public class CommandTermux {
     
     
     
+    //TODO: implement ability to send multiple commands at once
     
-    
-	
 	private static void run(String command, Runnable onCancel, Activity activity){
 		try{
 			//this supports multi line commands
@@ -318,14 +303,14 @@ public class CommandTermux {
 		private static File outputFile = new File("/storage/emulated/0/Download/.afterruntemp");
 		public static String output = "";
 
-		private static void start(final Runnable onLoop, final Runnable onDetect, final Activity activity) {
-            onLoop.run();
+		private static void start(final Runnable onLoading, final Runnable onEnd, final Activity activity) {
+            onLoading.run();
 			handler = new Handler(activity.getMainLooper());
 			fileCheckRunnable = new Runnable(){
 				@Override
 				public void run(){
 					if(! outputFile.exists()){
-						onLoop.run();
+						onLoading.run();
 						restart();
 						return;
 					}
@@ -338,11 +323,11 @@ public class CommandTermux {
 								outputHasEnd = true;
 								break;
 							}
-							onLoop.run();
+							onLoading.run();
 						}
 						
 						if(! outputHasEnd){
-							onLoop.run();
+							onLoading.run();
 							restart();
 							return;
 						}
@@ -353,11 +338,11 @@ public class CommandTermux {
 						while ((finalLine = finalReader.readLine()) != null) {
 							if(finalLine.contains(COMMAND_END_KEY)) break;
 							finalLines += "\n" + finalLine;
-							onLoop.run();
+							onLoading.run();
 						}
 						output = finalLines.trim();
 						outputFile.delete();
-						onDetect.run();
+						onEnd.run();
 						output = ""; //clear
 						stop();
 						
@@ -371,7 +356,7 @@ public class CommandTermux {
 			// Start the first check immediately.
 			handler.post(fileCheckRunnable);
 		}
-
+        
 		private static void restart(){
 			handler.postDelayed(fileCheckRunnable, checkIntervalMs);
 		}
