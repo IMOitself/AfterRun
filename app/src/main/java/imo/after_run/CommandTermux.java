@@ -42,18 +42,7 @@ public class CommandTermux {
 	 <uses-permission android:name="com.termux.permission.RUN_COMMAND"/>
 
 	 **/
-	public static boolean backgroundMode = true;
 	private static final String COMMAND_END_KEY = "END HEHE";
-
-	@Deprecated
-	public static boolean permissionIsGranted(Activity activity){
-        return hasTermuxPermission(activity);
-    }
-
-	@Deprecated
-	public static void permissionRequest(Activity activity){
-        requestTermuxPermission(activity);
-    }
 	
 	public static boolean hasTermuxPermission(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
@@ -252,7 +241,7 @@ public class CommandTermux {
 			intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
 			intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
 			intent.putExtra("com.termux.RUN_COMMAND_SHELL_NAME", "After Run");
-			if (backgroundMode) intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", true);
+			intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", true);
 			activity.startService(intent);
 
 		}catch(IllegalStateException e){

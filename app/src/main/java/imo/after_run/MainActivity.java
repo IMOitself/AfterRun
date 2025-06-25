@@ -14,7 +14,6 @@ public class MainActivity extends Activity
 {
 	EditText commandEdittext;
 	Button commandRunBtn;
-	ViewGroup instruction;
 	TextView outputTxt;
 	
     @Override
@@ -27,11 +26,9 @@ public class MainActivity extends Activity
 
 		commandEdittext = findViewById(R.id.command_edittext);
 		commandRunBtn = findViewById(R.id.command_run_btn);
-		instruction = findViewById(R.id.instruction); // optional. its just to show user what to do
 		outputTxt = findViewById(R.id.output_txt);
 		outputTxt.setMovementMethod(new ScrollingMovementMethod());
 
-		instruction.setVisibility(View.GONE);
 		commandRunBtn.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v){
@@ -42,7 +39,6 @@ public class MainActivity extends Activity
 	
 	void onButtonClicked(){
 		commandRunBtn.setEnabled(false);
-		if (! CommandTermux.backgroundMode) instruction.setVisibility(View.VISIBLE);
 		String command = commandEdittext.getText().toString().trim();
 		
         new CommandTermux(command, MainActivity.this)
@@ -50,7 +46,6 @@ public class MainActivity extends Activity
                 @Override
                 public void run(){
                     commandRunBtn.setEnabled(true);
-                    if (! CommandTermux.backgroundMode) instruction.setVisibility(View.GONE);
                 }
             })
             .setOnError(new Runnable(){// this runs if sending command to termux encounter an error

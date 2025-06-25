@@ -42,18 +42,7 @@ public class CommandTermuxV2 {
      <uses-permission android:name="com.termux.permission.RUN_COMMAND"/>
 
      **/
-    public static boolean backgroundMode = true;
     private static final String COMMAND_END_KEY = "END HEHE";
-
-    @Deprecated
-    public static boolean permissionIsGranted(Activity activity){
-        return hasTermuxPermission(activity);
-    }
-
-    @Deprecated
-    public static void permissionRequest(Activity activity){
-        requestTermuxPermission(activity);
-    }
 
     public static boolean hasTermuxPermission(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
