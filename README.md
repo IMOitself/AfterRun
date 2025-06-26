@@ -1,8 +1,5 @@
 # AfterRun
-**demo usage of Termux's API**
-
-> [!NOTE]
-> [see Termux:API](https://github.com/termux/termux-api)
+**demo usage of** [Termux:API](https://github.com/termux/termux-api)
 
 ## Download
 > [!WARNING]
