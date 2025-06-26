@@ -1,22 +1,33 @@
 # AfterRun
+**demo usage of Termux's API**
 
-> [!TIP]
-> currently remaking this README.
+> [!NOTE]
+> [see Termux:API](https://github.com/termux/termux-api)
 
 ## Download
 > [!WARNING]
-> This project is at its early stages and is prone to bugs
+> this project is on its early stages
 
-[![Download](https://img.shields.io/badge/compiled.apk-blue?style=for-the-badge)](https://github.com/IMOitself/AfterRun/blob/master/compiled.apk)
+[![Download](https://img.shields.io/badge/compiled.apk-blue?style=for-the-badge)](https://github.com/IMOitself/AfterGit/blob/master/compiled.apk)
 
 <br>
 
 ## Installation
-must have [Termux](https://f-droid.org/en/packages/com.termux/) installed
+> [!IMPORTANT]
+> must have [Termux](https://f-droid.org/en/packages/com.termux/)   installed <br><br>
+>  must have run this command on Termux first:
+> ```bash
+> pkg install termux-api
+> sed -i 's/# allow-external-apps = true/allow-external-apps = true/g' ~/.termux/termux.properties
+> termux-setup-storage
+> ```
 
-must have run this command on Termux first:
-```bash
-pkg install termux-api
-sed -i 's/# allow-external-apps = true/allow-external-apps = true/g' ~/.termux/termux.properties
-termux-setup-storage
-  ```
+<br>
+
+## Screenshots
+<details>
+  <summary>take a look</summary>
+
+  coming soon..
+  
+</details> 
