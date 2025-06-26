@@ -1,8 +1,7 @@
 # AfterRun
 
 > [!TIP]
-> 🛠️ WIP: currently remaking this README. <br>
-> In preparation for the release since its the 100th commit!
+> currently remaking this README.
 
 ## Download
 > [!WARNING]
