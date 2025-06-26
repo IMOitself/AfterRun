@@ -113,11 +113,11 @@ public class CommandTermuxV2 {
         return this;
     }
 
-    public CommandTermuxV2 setLoading(final TextView textview){
-        return setLoading(textview, "waiting");
+    public CommandTermuxV2 setLoadingText(final TextView textview){
+        return setLoadingText(textview, "waiting");
     }
 
-    public CommandTermuxV2 setLoading(final TextView textview, final String loadingText){
+    public CommandTermuxV2 setLoadingText(final TextView textview, final String loadingText){
         this.setOnLoading(new Runnable(){
                 String[] waiting = {loadingText+".", loadingText+"..", loadingText+"..."};
                 int waitingIndex = 0;
@@ -136,4 +136,62 @@ public class CommandTermuxV2 {
 
 
     //TODO: implement ability to send multiple commands at once
+    
+    public void start(){
+        try{
+            commandRun(command, mActivity);
+            
+        }catch(IllegalStateException e){
+            //Not allowed to start service Intent...app is in background...
+            makeStartTermuxServiceDialog(mActivity).show();
+            onError.run();
+		}
+    }
+    
+    private void commandRun(String command, Activity activity){
+        String commandFull = command;
+
+        Intent intent = new Intent();
+        intent.setClassName("com.termux", "com.termux.app.RunCommandService");
+        intent.setAction("com.termux.RUN_COMMAND");
+        intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
+        intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
+        intent.putExtra("com.termux.RUN_COMMAND_SHELL_NAME", "After Run");
+        intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", true);
+        activity.startService(intent);
+    }
+    
+    AlertDialog makeStartTermuxServiceDialog(final Activity activity){
+        return new AlertDialog.Builder(activity)
+            .setTitle("Start RunCommandService")
+            .setMessage("Termux RunCommandService not started yet\n\nOpen Termux and go back to this app")
+            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dia, int which) {
+                    dia.dismiss();
+                }
+            })
+            .setNegativeButton("Open Termux", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dia, int which) {
+                    try {
+                        String packageName = "com.termux";
+                        Intent intent = activity.getPackageManager().getLaunchIntentForPackage(packageName);
+                        activity.startActivity(intent);
+
+                    } catch (Exception e) {
+                        makeExceptionDialog(e, activity).show();
+                    }
+                }
+            })
+			.create();
+    }
+    
+    AlertDialog makeExceptionDialog(Exception e, Activity activity){
+        return new AlertDialog.Builder(activity)
+            .setTitle(getClass().toString()+" Error")
+            .setMessage(e.getMessage())
+            .setPositiveButton("Ok", null)
+            .create();
+    }
 }

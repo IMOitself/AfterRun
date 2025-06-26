@@ -233,8 +233,7 @@ public class CommandTermux {
 			
 			commandFull += "\necho \"" + COMMAND_END_KEY + "\"";
 			commandFull += " >> " + OutputDetector.outputFile.getAbsolutePath();
-			
-			
+            
 			Intent intent = new Intent();
 			intent.setClassName("com.termux", "com.termux.app.RunCommandService");
 			intent.setAction("com.termux.RUN_COMMAND");
