@@ -42,8 +42,6 @@ public class CommandTermuxV2 {
      <uses-permission android:name="com.termux.permission.RUN_COMMAND"/>
 
      **/
-    private static final String COMMAND_END_KEY = "END HEHE";
-
     public static boolean hasTermuxPermission(Activity activity){
         return activity.checkSelfPermission("com.termux.permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED;
     }
@@ -92,6 +90,8 @@ public class CommandTermuxV2 {
     private Runnable onEnd;
     private Runnable onLoading;
     private Runnable onError;
+    
+    private static final String COMMAND_END_KEY = "END HEHE";
 
     public CommandTermuxV2(String command, Activity mActivity){
         this.command = command;
@@ -138,14 +138,28 @@ public class CommandTermuxV2 {
     //TODO: implement ability to send multiple commands at once
     
     public void start(){
+        Runnable empty = new Runnable(){
+            public void run(){}
+        };
+        
+        if(onEnd == null) onEnd = empty;
+        if(onLoading == null) onLoading = empty;
+        if(onError == null) onError = empty;
+        
+        startCommandRun();
+    }
+    
+    private void startCommandRun(){
         try{
             commandRun(command, mActivity);
-            
+
         }catch(IllegalStateException e){
             //Not allowed to start service Intent...app is in background...
             makeStartTermuxServiceDialog(mActivity).show();
             onError.run();
-		}
+        }catch(Exception e){
+            makeExceptionDialog(e, mActivity).show();
+        }
     }
     
     private void commandRun(String command, Activity activity){

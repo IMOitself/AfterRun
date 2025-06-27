@@ -38,7 +38,6 @@ public class MainActivity extends Activity
     }
 	
 	void onButtonClicked(){
-		commandRunBtn.setEnabled(false);
 		String command = commandEdittext.getText().toString().trim();
 		
         new CommandTermuxV2(command, MainActivity.this).start();
