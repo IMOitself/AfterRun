@@ -157,7 +157,10 @@ public class CommandTermuxV2 {
         intent.putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/sh");
         intent.putExtra("com.termux.RUN_COMMAND_ARGUMENTS", new String[]{"-c", commandFull});
         intent.putExtra("com.termux.RUN_COMMAND_SHELL_NAME", "After Run");
-        intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", true);
+        
+        boolean NOTIFICATION_MODE = true;
+        intent.putExtra("com.termux.RUN_COMMAND_BACKGROUND", ! NOTIFICATION_MODE);
+        
         activity.startService(intent);
     }
     

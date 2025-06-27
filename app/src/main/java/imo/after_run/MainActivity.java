@@ -41,21 +41,6 @@ public class MainActivity extends Activity
 		commandRunBtn.setEnabled(false);
 		String command = commandEdittext.getText().toString().trim();
 		
-        new CommandTermux(command, MainActivity.this)
-            .quickSetOutputWithLoading(outputTxt, new Runnable(){
-                @Override
-                public void run(){
-                    commandRunBtn.setEnabled(true);
-                }
-            })
-            .setOnError(new Runnable(){// this runs if sending command to termux encounter an error
-                @Override
-                public void run(){
-                    CommandTermux.stopDetector(); // still waits for output and should be stopped
-                    commandRunBtn.setEnabled(true);
-                    outputTxt.setText("");
-                }
-            })
-        .run();
+        new CommandTermuxV2(command, MainActivity.this).start();
 	}
 }
