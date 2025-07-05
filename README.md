@@ -2,8 +2,10 @@
 **demo usage of** [Termux:API](https://github.com/termux/termux-api)
 
 ## Download
-> [!WARNING]
-> this project is on its early stages
+> [!CAUTION]
+> the demo app uses the CommandTermuxV2 which is unstable and unfinished.<br><br>
+Go to [this commit
+](https://github.com/IMOitself/AfterRun/tree/966e6317eba59add8cb193e976b77d6ca439bd8c) instead.
 
 [![Download](https://img.shields.io/badge/compiled.apk-blue?style=for-the-badge)](https://github.com/IMOitself/AfterGit/blob/master/compiled.apk)
 
